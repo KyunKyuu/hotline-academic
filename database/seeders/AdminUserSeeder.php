@@ -15,6 +15,7 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => env('ADMIN_NAME', 'Hotline Admin'),
                 'password' => Hash::make(env('ADMIN_PASSWORD', 'password123')),
+                'is_admin' => true,
             ]
         );
     }

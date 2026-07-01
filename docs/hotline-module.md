@@ -141,6 +141,12 @@ Menyimpan status follow-up admin:
 - `ADMIN_PASSWORD`
   - Password login admin awal.
 
+## Otorisasi admin
+
+- Dashboard hotline sekarang memakai `auth` dan middleware `admin`.
+- User harus login dan memiliki `is_admin = true`.
+- Seeder admin default otomatis membuat akun admin dengan flag tersebut.
+
 ## Endpoint
 
 - `GET /`

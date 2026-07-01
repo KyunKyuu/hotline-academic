@@ -50,6 +50,8 @@ Kredensial ini bisa diubah lewat `.env`:
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
 
+Account ini juga otomatis diberi flag `is_admin = true`, jadi route dashboard hanya bisa diakses akun admin.
+
 ## Konfigurasi penting
 
 Lihat file `.env.example` untuk semua key yang dibutuhkan.
@@ -63,4 +65,5 @@ Yang wajib diisi untuk koneksi WhatsApp Cloud API:
 
 ## Dokumentasi modul
 
-Dokumentasi implementasi teknis ada di `docs/hotline-module.md`.
+- Dokumentasi implementasi teknis: `docs/hotline-module.md`
+- Checklist deploy dan setup webhook Meta: `docs/meta-webhook-deploy-checklist.md`

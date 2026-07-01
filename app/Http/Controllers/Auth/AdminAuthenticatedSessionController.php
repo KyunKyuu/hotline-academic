@@ -29,6 +29,14 @@ class AdminAuthenticatedSessionController extends Controller
             ]);
         }
 
+        if (! optional(Auth::user())->is_admin) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun ini tidak memiliki akses admin.',
+            ]);
+        }
+
         $request->session()->regenerate();
 
         return redirect()->intended(route('hotline.dashboard'));
