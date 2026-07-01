@@ -15,9 +15,15 @@
                     <a href="{{ route('landing.whatsapp.redirect', ['source' => 'hero', 'campaign' => 'main_cta']) }}" class="button button-primary">
                         Mulai Chat WhatsApp
                     </a>
-                    <a href="{{ route('hotline.dashboard') }}" class="button button-secondary">
-                        Lihat Dashboard Hotline
-                    </a>
+                    @auth
+                        <a href="{{ route('hotline.dashboard') }}" class="button button-secondary">
+                            Lihat Dashboard Hotline
+                        </a>
+                    @else
+                        <a href="{{ route('admin.login') }}" class="button button-secondary">
+                            Login Admin
+                        </a>
+                    @endauth
                 </div>
                 <p class="mini" style="margin-top:16px;">
                     Nomor bisnis aktif: {{ $businessPhone ?: 'belum diatur di file .env' }}

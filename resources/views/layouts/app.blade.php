@@ -94,7 +94,15 @@
             <a href="{{ route('landing.index') }}"><strong>Hotline Academic</strong></a>
             <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
                 <a href="{{ route('landing.whatsapp.redirect', ['source' => 'navbar', 'campaign' => 'header']) }}" class="button button-secondary">Chat WhatsApp</a>
-                <a href="{{ route('hotline.dashboard') }}" class="button button-primary">Dashboard</a>
+                @auth
+                    <a href="{{ route('hotline.dashboard') }}" class="button button-primary">Dashboard</a>
+                    <form method="post" action="{{ route('admin.logout') }}">
+                        @csrf
+                        <button type="submit" class="button button-secondary">Logout</button>
+                    </form>
+                @else
+                    <a href="{{ route('admin.login') }}" class="button button-primary">Login Admin</a>
+                @endauth
             </div>
         </div>
     </div>

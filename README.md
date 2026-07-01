@@ -33,8 +33,22 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
+php artisan db:seed
 php artisan serve
 ```
+
+## Login admin default
+
+Sesudah `php artisan db:seed`, akun admin default:
+
+- `email`: `admin@hotline.local`
+- `password`: `password123`
+
+Kredensial ini bisa diubah lewat `.env`:
+
+- `ADMIN_NAME`
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
 
 ## Konfigurasi penting
 

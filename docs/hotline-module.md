@@ -132,10 +132,25 @@ Menyimpan status follow-up admin:
 - `WA_TRACK_INCOMING_MESSAGES`
   - Simpan chat masuk sebagai event analytics.
 
+### Admin dashboard
+
+- `ADMIN_NAME`
+  - Nama akun admin awal yang dibuat oleh seeder.
+- `ADMIN_EMAIL`
+  - Email login admin awal.
+- `ADMIN_PASSWORD`
+  - Password login admin awal.
+
 ## Endpoint
 
 - `GET /`
   - Landing page.
+- `GET /admin/login`
+  - Form login admin.
+- `POST /admin/login`
+  - Submit login admin.
+- `POST /admin/logout`
+  - Logout admin.
 - `GET /go/whatsapp`
   - Track CTA dan redirect ke WhatsApp.
 - `GET /api/webhooks/whatsapp`
@@ -163,6 +178,7 @@ Menyimpan status follow-up admin:
 ## Catatan Implementasi
 
 - Parser biodata saat ini berbasis regex dan normalisasi sederhana.
-- Untuk produksi, dashboard perlu diproteksi auth atau admin middleware.
+- Dashboard sekarang sudah diproteksi session auth admin.
 - Jika ingin parsing lebih fleksibel, nanti bisa ditambah fallback AI di service terpisah.
 - Jika volume pesan tinggi, proses webhook sebaiknya dipindah ke queue/job.
+- Seeder membuat satu admin default dan data dummy dashboard untuk preview lokal.
