@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Hotline Academic' }}</title>
+    <title>{{ $title ?? 'MLUP Academy' }}</title>
     <style>
         :root {
             --bg: #f5f1e8;
@@ -91,11 +91,12 @@
 <body>
     <div class="container">
         <div class="nav">
-            <a href="{{ route('landing.index') }}"><strong>Hotline Academic</strong></a>
+            <a href="{{ route('landing.index') }}"><strong>MLUP Academy</strong></a>
             <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
                 <a href="{{ route('landing.whatsapp.redirect', ['source' => 'navbar', 'campaign' => 'header']) }}" class="button button-secondary">Chat WhatsApp</a>
                 @auth
-                    <a href="{{ route('hotline.dashboard') }}" class="button button-primary">Dashboard</a>
+                    <a href="{{ route('hotline.dashboard') }}" class="button button-secondary">Dashboard</a>
+                    <a href="{{ route('admin.articles.index') }}" class="button button-primary">Artikel</a>
                     <form method="post" action="{{ route('admin.logout') }}">
                         @csrf
                         <button type="submit" class="button button-secondary">Logout</button>

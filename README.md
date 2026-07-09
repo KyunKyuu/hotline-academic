@@ -28,13 +28,20 @@ Project ini adalah fondasi `Laravel` untuk:
 
 ## Menjalankan project
 
+Database SQLite (`database/database.sqlite`) sudah disertakan di repo dan sudah berisi hasil migrasi + seed, jadi tidak perlu jalankan `migrate`/`db:seed` untuk mulai development.
+
 ```bash
 composer install
+npm install && npm run build
 cp .env.example .env
 php artisan key:generate
-php artisan migrate
-php artisan db:seed
 php artisan serve
+```
+
+Kalau ingin reset data ke kondisi awal (misalnya setelah bereksperimen), jalankan:
+
+```bash
+php artisan migrate:fresh --seed
 ```
 
 ## Login admin default
@@ -66,4 +73,5 @@ Yang wajib diisi untuk koneksi WhatsApp Cloud API:
 ## Dokumentasi modul
 
 - Dokumentasi implementasi teknis: `docs/hotline-module.md`
+- Panduan pengujian dan hosting: `docs/panduan-pengujian-hosting.md`
 - Checklist deploy dan setup webhook Meta: `docs/meta-webhook-deploy-checklist.md`
