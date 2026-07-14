@@ -190,27 +190,90 @@ class LandingPageController extends Controller
             // the program catalogue (portofolio, ekosistem, roadmap) is finalized.
             'programs' => [],
 
-            // Placeholder slots — replace name/tagline/profile/activities with
-            // real partner communities once collaborations are confirmed, and
-            // drop each logo into public/images/partners/{slug}.jpg.
-            'partners' => array_map(fn (int $n) => [
-                'slug' => 'mitra-'.$n,
-                'name' => 'Komunitas Mitra '.$n,
-                'tagline' => 'Kolaborasi segera diumumkan',
-                'logo' => ['file' => 'mitra-'.$n.'.jpg', 'caption' => 'Komunitas Mitra '.$n],
-                'profile' => 'Profil komunitas mitra akan ditampilkan di sini setelah kolaborasi resmi diumumkan.',
-                'activities' => [
-                    ['title' => 'Kegiatan bersama 1', 'description' => 'Deskripsi kegiatan akan ditambahkan setelah program berjalan.'],
+            // Real partner communities — profile/activities copy stays generic
+            // until each community shares their actual write-up.
+            'partners' => [
+                [
+                    'slug' => 'ufairah',
+                    'name' => 'Ufairah',
+                    'tagline' => 'Komunitas mitra MLUP Academy',
+                    'logo' => ['file' => 'ufairah.png', 'caption' => 'Ufairah'],
+                    'profile' => 'Profil komunitas mitra akan ditampilkan di sini setelah materi resmi tersedia.',
+                    'activities' => [
+                        ['title' => 'Kegiatan bersama 1', 'description' => 'Deskripsi kegiatan akan ditambahkan setelah program berjalan.'],
+                    ],
                 ],
-            ], range(1, 7)),
+                [
+                    'slug' => 'rest-area',
+                    'name' => 'Rest Area',
+                    'tagline' => 'Komunitas mitra MLUP Academy',
+                    'logo' => ['file' => 'rest-area.png', 'caption' => 'Rest Area'],
+                    'profile' => 'Profil komunitas mitra akan ditampilkan di sini setelah materi resmi tersedia.',
+                    'activities' => [
+                        ['title' => 'Kegiatan bersama 1', 'description' => 'Deskripsi kegiatan akan ditambahkan setelah program berjalan.'],
+                    ],
+                ],
+                [
+                    'slug' => 'gemusi',
+                    'name' => 'GEMUSI',
+                    'tagline' => 'Generasi Muslim Berprestasi',
+                    'logo' => ['file' => 'gemusi.png', 'caption' => 'GEMUSI'],
+                    'profile' => 'Profil komunitas mitra akan ditampilkan di sini setelah materi resmi tersedia.',
+                    'activities' => [
+                        ['title' => 'Kegiatan bersama 1', 'description' => 'Deskripsi kegiatan akan ditambahkan setelah program berjalan.'],
+                    ],
+                ],
+                [
+                    'slug' => 'bliss',
+                    'name' => 'BLISS Community',
+                    'tagline' => 'Komunitas mitra MLUP Academy',
+                    'logo' => ['file' => 'bliss.png', 'caption' => 'BLISS Community'],
+                    'profile' => 'Profil komunitas mitra akan ditampilkan di sini setelah materi resmi tersedia.',
+                    'activities' => [
+                        ['title' => 'Kegiatan bersama 1', 'description' => 'Deskripsi kegiatan akan ditambahkan setelah program berjalan.'],
+                    ],
+                ],
+                [
+                    'slug' => 'ruang-alara',
+                    'name' => 'Ruang Alara',
+                    'tagline' => 'Komunitas mitra MLUP Academy',
+                    'logo' => ['file' => 'ruang-alara.png', 'caption' => 'Ruang Alara'],
+                    'profile' => 'Profil komunitas mitra akan ditampilkan di sini setelah materi resmi tersedia.',
+                    'activities' => [
+                        ['title' => 'Kegiatan bersama 1', 'description' => 'Deskripsi kegiatan akan ditambahkan setelah program berjalan.'],
+                    ],
+                ],
+                [
+                    'slug' => 'hawa',
+                    'name' => 'HAWA',
+                    'tagline' => 'Komunitas mitra MLUP Academy',
+                    'logo' => ['file' => 'hawa.png', 'caption' => 'HAWA'],
+                    'profile' => 'Profil komunitas mitra akan ditampilkan di sini setelah materi resmi tersedia.',
+                    'activities' => [
+                        ['title' => 'Kegiatan bersama 1', 'description' => 'Deskripsi kegiatan akan ditambahkan setelah program berjalan.'],
+                    ],
+                ],
+                [
+                    'slug' => 'craftiva',
+                    'name' => 'Craftiva',
+                    'tagline' => 'Komunitas mitra MLUP Academy',
+                    'logo' => ['file' => 'craftiva.png', 'caption' => 'Craftiva'],
+                    'profile' => 'Profil komunitas mitra akan ditampilkan di sini setelah materi resmi tersedia.',
+                    'activities' => [
+                        ['title' => 'Kegiatan bersama 1', 'description' => 'Deskripsi kegiatan akan ditambahkan setelah program berjalan.'],
+                    ],
+                ],
+            ],
 
             'roadmap' => [
                 [
                     'label' => 'Beasiswa MLUP',
+                    'icon' => 'academic-cap',
                     'description' => 'Bantuan pendidikan yang disalurkan langsung dari kebaikan komunitas untuk mahasiswa yang membutuhkan.',
                 ],
                 [
                     'label' => 'LINTAS',
+                    'icon' => 'handshake',
                     'description' => 'Program kolaborasi lintas kampus dan lintas kota untuk memperluas jaringan ekosistem MLUP Academy.',
                 ],
             ],

@@ -31,11 +31,17 @@
 
         <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-surface-dark via-surface-dark/85 to-transparent"></div>
         <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-surface-dark/70 to-transparent"></div>
+
+        <div class="blob motion-safe:animate-float pointer-events-none absolute right-[10%] top-[18%] h-72 w-72 bg-primary/20"></div>
+        <div class="blob motion-safe:animate-float-slow pointer-events-none absolute left-[8%] bottom-[12%] h-64 w-64 bg-accent-blue/15"></div>
     </div>
 
     <div class="container-app relative z-10 pb-16 pt-40 sm:pb-24">
         <span class="inline-flex items-center gap-2 rounded-pill bg-surface-dark-elevated px-4 py-1.5 text-xs font-medium uppercase tracking-[0.14em] text-on-dark-soft" data-reveal>
-            <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+            <span class="relative flex h-1.5 w-1.5">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+                <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary"></span>
+            </span>
             Komunitas Pendidikan Muslim Indonesia
         </span>
 
@@ -50,10 +56,10 @@
 
         <div class="mt-10 flex flex-wrap items-center gap-4" data-reveal data-reveal-delay="3">
             <a href="{{ route('landing.whatsapp.redirect', ['source' => 'hero', 'campaign' => 'gabung_komunitas']) }}"
-               class="inline-flex h-14 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-on-primary shadow-sm transition hover:bg-primary-active">
+               class="glow-primary inline-flex h-14 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-on-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-primary-active">
                 Gabung Komunitas
             </a>
-            <a href="#tentang" class="inline-flex h-14 items-center justify-center rounded-md border border-white/15 px-8 text-base font-medium text-on-dark transition hover:bg-white/5">
+            <a href="#tentang" class="inline-flex h-14 items-center justify-center rounded-md border border-white/15 px-8 text-base font-medium text-on-dark transition hover:-translate-y-0.5 hover:bg-white/5">
                 Kenali Kami
             </a>
         </div>
@@ -66,8 +72,8 @@
 </section>
 
 {{-- ============ MARQUEE ============ --}}
-<div class="overflow-hidden border-y border-hairline bg-surface-soft py-5">
-    <div class="flex w-max animate-marquee gap-12 whitespace-nowrap">
+<div class="group overflow-hidden border-y border-hairline bg-surface-soft py-5">
+    <div class="flex w-max animate-marquee gap-12 whitespace-nowrap group-hover:[animation-play-state:paused]">
         @for ($i = 0; $i < 2; $i++)
             @foreach ($fields as $field)
                 <span class="flex items-center gap-4 text-base font-medium uppercase tracking-[0.1em] text-muted">
@@ -310,19 +316,19 @@
             </h2>
         </div>
 
-        {{-- Asymmetric editorial masonry — collapses to a single column on mobile --}}
-        <div class="mt-12 grid grid-cols-1 gap-4 sm:mt-16 sm:grid-cols-[0.85fr_1.15fr] sm:gap-6">
-            <div class="grid gap-4 sm:gap-6">
-                <x-photo-frame :item="$proofGallery[0]" class="aspect-[4/5] rounded-lg shadow-md" />
-                <x-photo-frame :item="$proofGallery[1]" class="aspect-[4/3] rounded-lg shadow-md" />
-            </div>
-            <div class="grid gap-4 sm:gap-6">
-                <x-photo-frame :item="$proofGallery[2]" class="aspect-[16/10] rounded-lg shadow-md" />
-                <div class="grid grid-cols-2 gap-4 sm:gap-6">
-                    <x-photo-frame :item="$proofGallery[3]" class="aspect-[3/4] rounded-lg shadow-md" />
-                    <x-photo-frame :item="$proofGallery[4]" class="aspect-[3/4] rounded-lg shadow-md" />
+        {{-- Formal row of large, monumental tiles --}}
+        @php
+            $galleryAccents = ['bg-primary text-on-primary', 'bg-accent-blue text-on-primary', 'bg-accent-teal text-on-primary', 'bg-error text-on-primary'];
+        @endphp
+        <div class="mt-12 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
+            @foreach ($proofGallery as $index => $photo)
+                <div class="relative" data-reveal data-reveal-delay="{{ min($index + 1, 5) }}">
+                    <span class="absolute -left-3 -top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full font-serif text-base shadow-md ring-4 ring-canvas {{ $galleryAccents[$index % count($galleryAccents)] }}">
+                        {{ sprintf('%02d', $index + 1) }}
+                    </span>
+                    <x-photo-frame :item="$photo" class="glow-card aspect-[4/5] rounded-lg shadow-2xl" />
                 </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -338,7 +344,8 @@
         </div>
 
         <div class="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start" x-data="{ active: 0 }" data-reveal>
-            <div class="lg:sticky lg:top-28">
+            <div class="relative lg:sticky lg:top-28">
+                <div class="blob motion-safe:animate-float pointer-events-none absolute inset-0 -z-10 bg-primary/20"></div>
                 <div class="relative mx-auto flex aspect-square w-full max-w-sm items-center justify-center overflow-hidden rounded-2xl shadow-lg transition-colors duration-500 lg:mx-0"
                      :class="{
                         'bg-ink': active === 0,
@@ -384,6 +391,25 @@
     </div>
 </section>
 
+{{-- ============ INTERLUDE — chapter break before the numbered sections ============ --}}
+<section class="relative overflow-hidden bg-surface-dark py-24 text-on-dark sm:py-32">
+    <div class="pattern-lattice absolute inset-0 text-on-dark/[0.04]"></div>
+    <div class="blob motion-safe:animate-float pointer-events-none absolute left-1/4 top-0 h-72 w-72 -translate-y-1/2 bg-primary/15"></div>
+    <div class="blob motion-safe:animate-float-slow pointer-events-none absolute right-1/4 bottom-0 h-64 w-64 translate-y-1/2 bg-accent-teal/15"></div>
+    <x-leaf class="pointer-events-none absolute -left-12 top-1/2 hidden h-72 w-72 -translate-y-1/2 -rotate-[20deg] text-on-dark/[0.05] xl:block" />
+    <x-leaf class="pointer-events-none absolute -right-12 top-1/2 hidden h-72 w-72 -translate-y-1/2 rotate-[20deg] text-on-dark/[0.05] xl:block" />
+
+    <div class="container-app relative text-center" data-reveal>
+        <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-surface-dark-elevated">
+            <x-brand-mark class="h-8 w-8" />
+        </span>
+        <p class="mx-auto mt-8 max-w-3xl font-serif text-3xl italic leading-snug text-balance sm:text-5xl">
+            Satu nilai yang dijaga, tumbuh jadi kebiasaan. Satu kebiasaan yang dirawat, tumbuh jadi ekosistem.
+        </p>
+        <p class="mt-6 text-sm font-medium uppercase tracking-[0.15em] text-on-dark-soft">Pilar Ke-4 &middot; Merawat Ekosistem</p>
+    </div>
+</section>
+
 {{-- ============ 06 · PORTOFOLIO PROGRAM ============ --}}
 <section id="program" class="scroll-mt-20 py-28 sm:py-36">
     <div class="container-app">
@@ -394,7 +420,7 @@
             </div>
             <div class="mt-16 grid gap-6 lg:grid-cols-3">
                 @foreach ($programs as $program)
-                    <div class="rounded-lg border border-hairline bg-canvas p-8">
+                    <div class="glow-card rounded-lg border border-hairline bg-canvas p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
                         <h3 class="font-serif text-2xl text-ink">{{ $program['title'] }}</h3>
                         <p class="mt-3 text-lg leading-relaxed text-body">{{ $program['description'] }}</p>
                     </div>
@@ -449,6 +475,8 @@
                 <circle cx="50" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="0.4" stroke-dasharray="0.5 4" />
             </svg>
 
+            <div class="blob motion-safe:animate-float pointer-events-none absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 bg-primary/25 sm:h-40 sm:w-40"></div>
+
             <div class="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-1 rounded-full bg-canvas p-2.5 shadow-xl sm:h-20 sm:w-20">
                 <x-brand-mark class="h-full w-full" />
             </div>
@@ -485,6 +513,8 @@
 {{-- ============ 08 · ROADMAP 1448 H ============ --}}
 <section class="relative scroll-mt-20 overflow-hidden bg-surface-soft py-28 sm:py-36">
     <x-leaf class="pointer-events-none absolute -left-12 bottom-10 hidden h-64 w-64 -rotate-[12deg] text-ink/[0.04] xl:block" />
+    <div class="blob motion-safe:animate-float pointer-events-none absolute left-1/4 top-1/3 h-64 w-64 bg-primary/15"></div>
+    <div class="blob motion-safe:animate-float-slow pointer-events-none absolute right-1/4 bottom-0 h-56 w-56 bg-accent-blue/15"></div>
 
     <div class="container-app relative">
         <div class="max-w-2xl" data-reveal>
@@ -495,17 +525,27 @@
             <p class="mt-6 text-xl leading-relaxed text-body">Klik tiap titik untuk melihat detailnya.</p>
         </div>
 
+        @php
+            $roadmapAccents = [
+                ['bg' => 'bg-primary', 'tint' => 'bg-primary/15', 'text' => 'text-primary'],
+                ['bg' => 'bg-accent-blue', 'tint' => 'bg-accent-blue/15', 'text' => 'text-accent-blue'],
+            ];
+        @endphp
+
         <div class="relative mt-24" x-data="accordionGroup(0)" data-reveal>
-            <svg viewBox="0 0 1000 200" preserveAspectRatio="none" class="pointer-events-none absolute inset-x-0 top-[42px] hidden h-32 w-full text-muted-soft sm:block">
-                <path d="M 80 40 Q 280 -30, 500 90 T 920 40" fill="none" stroke="currentColor" stroke-width="3.5" stroke-dasharray="0.5 12" stroke-linecap="round" opacity="0.6" />
+            <svg viewBox="0 0 1000 200" preserveAspectRatio="none" class="pointer-events-none absolute inset-x-0 top-[42px] hidden h-32 w-full text-primary/40 sm:block">
+                <path d="M 80 40 Q 280 -30, 500 90 T 920 40" fill="none" stroke="currentColor" stroke-width="3.5" stroke-dasharray="0.5 12" stroke-linecap="round" />
             </svg>
 
             <div class="relative grid gap-12 sm:grid-cols-3 sm:gap-6">
                 @foreach ($roadmap as $index => $milestone)
+                    @php
+                        $accent = $roadmapAccents[$index % count($roadmapAccents)];
+                    @endphp
                     <button @click="toggle({{ $index }})" type="button" class="group flex flex-col items-center text-center {{ $index === 1 ? 'sm:mt-20' : '' }}">
-                        <span class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-lg font-serif shadow-lg ring-4 ring-canvas transition group-hover:scale-105"
-                              :class="isOpen({{ $index }}) ? 'bg-primary text-on-primary' : 'bg-surface-card text-ink'">
-                            0{{ $index + 1 }}
+                        <span class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full shadow-lg ring-4 ring-canvas transition group-hover:scale-105"
+                              :class="isOpen({{ $index }}) ? '{{ $accent['bg'] }} text-on-primary' : '{{ $accent['tint'] }} {{ $accent['text'] }}'">
+                            <x-icon :name="$milestone['icon']" class="h-7 w-7" />
                         </span>
                         <h3 class="mt-5 font-serif text-2xl text-ink">{{ $milestone['label'] }}</h3>
                         <div x-show="isOpen({{ $index }})" x-collapse x-cloak class="mt-3 max-w-[240px]">
@@ -538,10 +578,14 @@
             </h2>
         </div>
 
+        @php
+            $wingAccents = ['bg-primary/15 text-primary', 'bg-accent-teal/15 text-accent-teal', 'bg-accent-blue/15 text-accent-blue'];
+        @endphp
+
         <div class="mt-16 grid gap-6 sm:grid-cols-3">
             @foreach ($wings as $index => $wing)
-                <div class="rounded-lg border border-hairline bg-canvas p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md" data-reveal data-reveal-delay="{{ min($index + 1, 5) }}">
-                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-surface-card text-ink">
+                <div class="glow-card rounded-lg border border-hairline bg-canvas p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md" data-reveal data-reveal-delay="{{ min($index + 1, 5) }}">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full {{ $wingAccents[$index % count($wingAccents)] }}">
                         <x-icon :name="$wing['icon']" class="h-6 w-6" />
                     </span>
                     <h3 class="mt-6 font-serif text-2xl text-ink">{{ $wing['title'] }}</h3>
@@ -615,7 +659,7 @@
 
             <div class="grid gap-4 sm:grid-cols-2" data-reveal data-reveal-delay="1">
                 <div class="rounded-lg border border-hairline bg-canvas p-6 shadow-sm">
-                    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-card text-primary">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-accent-blue/15 text-accent-blue">
                         <x-icon name="map-pin" class="h-5 w-5" />
                     </span>
                     <h3 class="mt-4 text-xs font-medium uppercase tracking-[0.1em] text-muted">Lokasi</h3>
@@ -623,7 +667,7 @@
                 </div>
 
                 <a href="{{ route('landing.whatsapp.redirect', ['source' => 'kontak', 'campaign' => 'gabung_komunitas']) }}"
-                   class="group rounded-lg border border-hairline bg-canvas p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                   class="group glow-card rounded-lg border border-hairline bg-canvas p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                     <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary">
                         <x-icon name="chat" class="h-5 w-5" />
                     </span>
@@ -635,7 +679,7 @@
                 </a>
 
                 <div class="rounded-lg border border-hairline bg-canvas p-6 shadow-sm sm:col-span-2">
-                    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-card text-primary">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-accent-teal/15 text-accent-teal">
                         <x-icon name="globe" class="h-5 w-5" />
                     </span>
                     <h3 class="mt-4 text-xs font-medium uppercase tracking-[0.1em] text-muted">Jangkauan</h3>

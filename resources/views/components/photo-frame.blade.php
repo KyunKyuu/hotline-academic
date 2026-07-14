@@ -13,12 +13,13 @@
         </div>
     @else
         <div class="photo-frame absolute inset-0 text-ink/[0.06]"></div>
-        <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-            <svg viewBox="0 0 24 24" class="h-8 w-8 text-muted-soft" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M3 7h3l1.5-2h9L18 7h3v12H3z" />
-                <circle cx="12" cy="13" r="3.3" stroke-width="1.3" />
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
+            <svg viewBox="0 0 24 24" class="h-9 w-9 text-muted-soft" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M3 7h3l1.5-2h9L18 7h3v12H3z" />
+                <circle cx="12" cy="13" r="3.3" stroke-width="1.2" />
             </svg>
-            <p class="text-xs font-medium uppercase tracking-[0.1em] text-muted-soft">{{ $item['caption'] }}</p>
+            <span class="h-px w-10 bg-primary/40"></span>
+            <p class="max-w-[16rem] font-serif text-lg italic leading-snug text-muted">{{ $item['caption'] }}</p>
         </div>
     @endif
 </div>

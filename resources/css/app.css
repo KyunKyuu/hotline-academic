@@ -49,6 +49,8 @@
 
     --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     --animate-marquee: marquee 32s linear infinite;
+    --animate-float: float 8s ease-in-out infinite;
+    --animate-float-slow: float 12s ease-in-out infinite;
 
     @keyframes fade-up {
         from {
@@ -66,6 +68,14 @@
         }
         to {
             transform: translateX(-50%);
+        }
+    }
+    @keyframes float {
+        0%, 100% {
+            transform: translate(0, 0) scale(1);
+        }
+        50% {
+            transform: translate(2%, -6%) scale(1.06);
         }
     }
 }
@@ -130,5 +140,28 @@
         background-image:
             repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 1px, transparent 14px),
             repeating-linear-gradient(-45deg, currentColor 0, currentColor 1px, transparent 1px, transparent 14px);
+    }
+
+    /* Soft blurred gradient orb — web3-style ambient depth, kept subtle for a professional tone */
+    .blob {
+        border-radius: 9999px;
+        filter: blur(60px);
+        will-change: transform;
+    }
+
+    .glow-primary {
+        transition: box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glow-primary:hover {
+        box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-primary) 40%, transparent),
+            0 10px 40px -8px color-mix(in oklab, var(--color-primary) 55%, transparent);
+    }
+
+    .glow-card {
+        transition: box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+    }
+    .glow-card:hover {
+        border-color: color-mix(in oklab, var(--color-primary) 45%, transparent);
+        box-shadow: 0 16px 50px -20px color-mix(in oklab, var(--color-primary) 45%, transparent);
     }
 }
