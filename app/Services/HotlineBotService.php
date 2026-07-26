@@ -21,6 +21,13 @@ class HotlineBotService
 
     public function processIncoming(array $payload): void
     {
+        // Detect Fonnte webhook payload
+        if (isset($payload['sender']) && isset($payload['message'])) {
+            $this->processFonnteIncoming($payload);
+            return;
+        }
+
+        // Legacy Meta webhook payload
         foreach (data_get($payload, 'entry', []) as $entry) {
             foreach (data_get($entry, 'changes', []) as $change) {
                 foreach (data_get($change, 'value.messages', []) as $message) {
@@ -109,6 +116,87 @@ class HotlineBotService
                 }
             }
         }
+    }
+
+    private function processFonnteIncoming(array $payload): void
+    {
+        $senderPhone = $payload['sender'] ?? '';
+        $phone = $this->normalizePhone((string) $senderPhone);
+
+        if ($phone === '') {
+            return;
+        }
+
+        $profileName = $payload['name'] ?? null;
+
+        $contact = WaContact::firstOrCreate(
+            ['phone_number' => $phone],
+            [
+                'wa_name' => $profileName,
+                'chat_state' => HotlineState::NEW,
+                'first_chatted_at' => now(),
+                'source' => 'whatsapp',
+            ]
+        );
+
+        $body = trim((string) ($payload['message'] ?? ''));
+        $clickReference = $this->extractClickReference($body);
+
+        $contact->forceFill([
+            'wa_name' => $profileName ?: $contact->wa_name,
+            'first_chatted_at' => $contact->first_chatted_at ?: now(),
+            'last_message_at' => now(),
+        ])->save();
+
+        if ($clickReference && blank($contact->click_token)) {
+            $ctaEvent = WaAnalyticsEvent::query()
+                ->where('event_type', 'cta_clicked')
+                ->where('reference', $clickReference)
+                ->latest('occurred_at')
+                ->first();
+
+            $contact->forceFill([
+                'click_token' => $clickReference,
+                'first_clicked_at' => $ctaEvent?->occurred_at,
+                'source' => $ctaEvent?->source ?: $contact->source,
+                'metadata' => array_filter([
+                    ...($contact->metadata ?? []),
+                    'campaign' => $ctaEvent?->campaign,
+                ]),
+            ])->save();
+        }
+
+        $conversation = $this->resolveConversation($contact);
+
+        $storedMessage = WaMessage::create([
+            'contact_id' => $contact->id,
+            'conversation_id' => $conversation->id,
+            'direction' => 'inbound',
+            'message_id' => $payload['id'] ?? 'fonnte-local-' . Str::uuid(),
+            'message_type' => 'text',
+            'body' => $body,
+            'payload' => $payload,
+            'sent_at' => now(),
+        ]);
+
+        if (config('hotline.track_incoming_messages')) {
+            WaAnalyticsEvent::create([
+                'contact_id' => $contact->id,
+                'conversation_id' => $conversation->id,
+                'event_type' => 'incoming_message',
+                'source' => 'whatsapp',
+                'phone_number' => $contact->phone_number,
+                'reference' => $storedMessage->message_id,
+                'payload' => $payload,
+                'occurred_at' => now(),
+            ]);
+        }
+
+        if (! config('hotline.bot_enabled')) {
+            return;
+        }
+
+        $this->advanceFlow($contact->fresh(), $conversation, $body);
     }
 
     private function advanceFlow(WaContact $contact, WaConversation $conversation, string $messageBody): void

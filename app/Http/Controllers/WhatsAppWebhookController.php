@@ -23,7 +23,11 @@ class WhatsAppWebhookController extends Controller
             return response((string) $challenge, 200);
         }
 
-        return response('Invalid verify token.', 403);
+        if ($mode) {
+            return response('Invalid verify token.', 403);
+        }
+
+        return response('Webhook is active.', 200);
     }
 
     public function handle(Request $request): JsonResponse

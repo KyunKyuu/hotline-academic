@@ -17,32 +17,34 @@ class WhatsAppCloudApiService
         $message = str_replace('\n', PHP_EOL, $message);
 
         $payload = [
-            'messaging_product' => 'whatsapp',
-            'to' => $contact->phone_number,
-            'type' => 'text',
-            'text' => [
-                'preview_url' => false,
-                'body' => $message,
-            ],
+            'target' => $contact->phone_number,
+            'message' => $message,
         ];
 
         $messageId = null;
 
         if ($this->isConfigured()) {
-            $response = Http::withToken((string) config('hotline.access_token'))
-                ->post($this->endpoint(), $payload);
+            $response = Http::withHeaders([
+                'Authorization' => (string) config('hotline.access_token'),
+            ])->asForm()->post($this->endpoint(), $payload);
 
             if ($response->failed()) {
-                Log::warning('WhatsApp API send failed.', [
+                Log::warning('Fonnte API send failed.', [
                     'status' => $response->status(),
                     'body' => $response->json(),
                     'phone' => $contact->phone_number,
                 ]);
             } else {
-                $messageId = data_get($response->json(), 'messages.0.id');
+                $responseJson = $response->json();
+                $idData = data_get($responseJson, 'id');
+                if (is_array($idData)) {
+                    $messageId = $idData[0] ?? null;
+                } else {
+                    $messageId = $idData;
+                }
             }
         } else {
-            Log::info('WhatsApp API not configured. Outbound message stored locally only.', [
+            Log::info('Fonnte API not configured. Outbound message stored locally only.', [
                 'phone' => $contact->phone_number,
                 'body' => $message,
             ]);
@@ -72,15 +74,11 @@ class WhatsAppCloudApiService
 
     public function isConfigured(): bool
     {
-        return filled(config('hotline.phone_number_id')) && filled(config('hotline.access_token'));
+        return filled(config('hotline.access_token'));
     }
 
     private function endpoint(): string
     {
-        return sprintf(
-            'https://graph.facebook.com/%s/%s/messages',
-            config('hotline.api_version'),
-            config('hotline.phone_number_id')
-        );
+        return 'https://api.fonnte.com/send';
     }
 }
