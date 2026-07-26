@@ -401,7 +401,7 @@ class LandingPageController extends Controller
         $source = $request->string('source', 'landing_page')->value();
         $campaign = $request->string('campaign', 'default')->value();
         $clickToken = 'CTA-'.Str::upper(Str::random(8));
-        $message = trim(config('hotline.prefilled_message').' Ref: '.$clickToken);
+        $message = trim(config('hotline.prefilled_message').' ['.$clickToken.']');
 
         if (config('hotline.track_cta')) {
             WaAnalyticsEvent::create([
