@@ -73,8 +73,19 @@ Laravel 13 membutuhkan minimal **PHP 8.3**, namun kami sangat menyarankan Anda u
      DB_DATABASE=nama_database_anda
      DB_USERNAME=username_database_anda
      DB_PASSWORD=password_database_anda
+
+     # Token Device Fonnte Anda
+     FONNTE_TOKEN=isi_token_device_fonnte_anda
      ```
    - Generate application key: Jika Anda memiliki akses SSH (lihat bagian di bawah), Anda bisa menjalankan `php artisan key:generate`. Jika tidak, Anda dapat menyalin nilai `APP_KEY` dari file `.env` lokal Anda ke file `.env` produksi (namun pastikan tidak bocor).
+
+3. **Atur Webhook di Dashboard Fonnte:**
+   - Masuk ke dashboard Fonnte Anda.
+   - Buka menu **Device** -> pilih device Anda -> klik **Edit / Settings**.
+   - Pada kolom **Webhook URL**, masukkan URL tujuan webhook Anda:
+     `https://domain-anda.com/api/webhooks/whatsapp`
+     *(Ganti `domain-anda.com` dengan domain aktif Anda, misalnya `https://mlup.konekin.space/api/webhooks/whatsapp`)*
+   - Simpan perubahan di Fonnte. Sekarang, setiap pesan masuk ke nomor WhatsApp bot akan otomatis diproses oleh aplikasi Laravel Anda.
 
 ---
 
