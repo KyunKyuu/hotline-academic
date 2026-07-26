@@ -296,6 +296,12 @@ class HotlineBotService
         }
 
         if ($state === HotlineState::AWAITING_REFERRAL) {
+            $trimmed = Str::of($messageBody)->lower()->trim()->value();
+            if (in_array($trimmed, ['ada', 'ya', 'yes', 'y'], true)) {
+                $this->whatsApp->sendText($contact, $conversation, "Silakan kirimkan kode referral Anda sekarang:");
+                return;
+            }
+
             $referralCode = $this->normalizeReferral($messageBody);
             $groupType = $referralCode ? 'A' : 'B';
 
