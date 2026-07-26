@@ -6,18 +6,20 @@
     <title>Login Admin - MLUP Academy</title>
     <style>
         :root {
-            --bg: #08090c;
-            --panel: rgba(18, 20, 27, .78);
-            --panel-strong: rgba(26, 29, 38, .92);
-            --text: #f4f6fb;
-            --muted: #969dac;
-            --line: rgba(255, 255, 255, .1);
-            --line-strong: rgba(255, 255, 255, .18);
-            --accent: #5e8cff;
-            --accent-strong: #7da2ff;
-            --danger-bg: rgba(255, 92, 92, .11);
-            --danger-line: rgba(255, 120, 120, .28);
-            --danger-text: #ffb8b8;
+            --bg: #efe6d5;
+            --panel: rgba(255, 253, 248, 0.85);
+            --panel-strong: rgba(255, 255, 255, 0.95);
+            --text: #1b1c1d;
+            --muted: #5f6470;
+            --line: #ddd2be;
+            --line-strong: #c4b9a3;
+            --accent: #125d38; /* brand primary */
+            --accent-strong: #0a3d24;
+            --accent-soft: #d8ecd9;
+            --accent-orange: #c46b2d;
+            --danger-bg: #fce8e6;
+            --danger-line: #fad2cf;
+            --danger-text: #c5221f;
         }
 
         * {
@@ -28,11 +30,11 @@
             margin: 0;
             min-height: 100dvh;
             color: var(--text);
-            font-family: "Geist", "Satoshi", "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: "Georgia", "Times New Roman", serif;
             background:
-                radial-gradient(circle at 18% 18%, rgba(94, 140, 255, .18), transparent 26%),
-                radial-gradient(circle at 78% 8%, rgba(255, 255, 255, .08), transparent 22%),
-                linear-gradient(180deg, #0c0d12 0%, var(--bg) 52%, #050609 100%);
+                radial-gradient(circle at 18% 18%, rgba(18, 93, 56, .08), transparent 26%),
+                radial-gradient(circle at 78% 8%, rgba(196, 107, 45, .06), transparent 22%),
+                linear-gradient(180deg, #f6f2e8 0%, var(--bg) 100%);
             overflow-x: hidden;
         }
 
@@ -42,8 +44,8 @@
             inset: 0;
             pointer-events: none;
             background-image:
-                linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px);
+                linear-gradient(rgba(18, 93, 56, .015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(18, 93, 56, .015) 1px, transparent 1px);
             background-size: 72px 72px;
             mask-image: radial-gradient(circle at center, black 0%, transparent 72%);
         }
@@ -53,7 +55,7 @@
             position: fixed;
             inset: 0;
             pointer-events: none;
-            background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, .035) 45%, transparent 58%);
+            background: linear-gradient(120deg, transparent 0%, rgba(18, 93, 56, .01) 45%, transparent 58%);
             animation: sheen 8s ease-in-out infinite;
             opacity: .55;
         }
@@ -89,13 +91,14 @@
             align-items: center;
             justify-content: space-between;
             gap: 18px;
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
         }
 
         .brand {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            color: #ffffff;
+            color: var(--text);
             font-weight: 700;
             letter-spacing: -.02em;
         }
@@ -107,9 +110,9 @@
             border-radius: 10px;
             display: grid;
             place-items: center;
-            background: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .03));
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14);
-            color: var(--accent-strong);
+            background: var(--accent-soft);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4);
+            color: var(--accent);
         }
 
         .back-link {
@@ -120,7 +123,7 @@
             border: 1px solid var(--line);
             border-radius: 999px;
             padding: 9px 13px;
-            background: rgba(255, 255, 255, .035);
+            background: rgba(255, 255, 255, .5);
             transition: transform .24s cubic-bezier(.16, 1, .3, 1), border-color .24s ease, color .24s ease;
         }
 
@@ -138,23 +141,24 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: #c5d3ff;
-            border: 1px solid rgba(94, 140, 255, .24);
-            background: rgba(94, 140, 255, .09);
+            color: var(--accent);
+            border: 1px solid var(--accent-soft);
+            background: var(--accent-soft);
             border-radius: 999px;
             padding: 7px 12px;
             font-size: 12px;
             font-weight: 700;
             letter-spacing: .08em;
             text-transform: uppercase;
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
         }
 
         .status-dot {
             width: 7px;
             height: 7px;
             border-radius: 99px;
-            background: var(--accent-strong);
-            box-shadow: 0 0 0 5px rgba(94, 140, 255, .14);
+            background: var(--accent-orange);
+            box-shadow: 0 0 0 5px rgba(196, 107, 45, .15);
             animation: breathe 2.6s ease-in-out infinite;
         }
 
@@ -163,7 +167,9 @@
             margin: 22px 0 18px;
             font-size: clamp(42px, 6vw, 76px);
             line-height: .92;
-            letter-spacing: -.07em;
+            letter-spacing: -.05em;
+            font-family: "Georgia", "Times New Roman", serif;
+            font-weight: normal;
         }
 
         .hero-copy p {
@@ -172,6 +178,7 @@
             color: var(--muted);
             font-size: 17px;
             line-height: 1.75;
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
         }
 
         .signal-grid {
@@ -180,14 +187,15 @@
             gap: 14px;
             max-width: 590px;
             margin-top: 42px;
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
         }
 
         .signal-card {
             border: 1px solid var(--line);
             border-radius: 22px;
             padding: 18px;
-            background: rgba(255, 255, 255, .045);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+            background: rgba(255, 253, 248, .6);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
         }
 
         .signal-card.wide {
@@ -204,7 +212,7 @@
         .signal-value {
             display: block;
             margin-top: 10px;
-            color: #fff;
+            color: var(--accent);
             font-size: 24px;
             font-weight: 750;
             letter-spacing: -.04em;
@@ -212,7 +220,7 @@
 
         .signal-text {
             margin-top: 10px;
-            color: #b8bfcd;
+            color: var(--muted);
             line-height: 1.55;
             font-size: 14px;
         }
@@ -223,8 +231,9 @@
             border-radius: 28px;
             padding: 1px;
             background:
-                linear-gradient(145deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .04) 34%, rgba(94, 140, 255, .18));
-            box-shadow: 0 28px 80px rgba(0, 0, 0, .36);
+                linear-gradient(145deg, rgba(255, 255, 255, .6), rgba(255, 255, 255, .2) 34%, rgba(18, 93, 56, .15));
+            box-shadow: 0 28px 80px rgba(49, 45, 35, 0.08);
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
         }
 
         .login-card {
@@ -232,7 +241,7 @@
             padding: 30px;
             background: var(--panel);
             backdrop-filter: blur(22px);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6);
         }
 
         .panel-header {
@@ -247,6 +256,8 @@
             margin: 0 0 8px;
             font-size: 26px;
             letter-spacing: -.045em;
+            font-family: "Georgia", "Times New Roman", serif;
+            font-weight: normal;
         }
 
         .panel-header p {
@@ -258,11 +269,11 @@
 
         .secure-pill {
             flex: 0 0 auto;
-            color: #dce5ff;
-            border: 1px solid rgba(94, 140, 255, .28);
+            color: var(--accent);
+            border: 1px solid var(--line-strong);
             border-radius: 999px;
             padding: 8px 10px;
-            background: rgba(94, 140, 255, .09);
+            background: var(--accent-soft);
             font-size: 12px;
             font-weight: 700;
         }
@@ -289,7 +300,7 @@
         }
 
         .field label {
-            color: #d7dbe5;
+            color: var(--text);
             font-size: 13px;
             font-weight: 700;
         }
@@ -301,24 +312,24 @@
             border: 1px solid var(--line);
             border-radius: 15px;
             color: var(--text);
-            background: rgba(6, 8, 13, .62);
+            background: #ffffff;
             padding: 0 15px;
             outline: none;
             transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
         }
 
         .field input::placeholder {
-            color: #687080;
+            color: #8890a0;
         }
 
         .field input:focus {
-            border-color: rgba(125, 162, 255, .74);
-            background: rgba(8, 10, 16, .82);
-            box-shadow: 0 0 0 4px rgba(94, 140, 255, .12);
+            border-color: var(--accent);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(18, 93, 56, .12);
         }
 
         .helper {
-            color: #747b8a;
+            color: var(--muted);
             font-size: 12px;
         }
 
@@ -350,11 +361,11 @@
             border: 0;
             border-radius: 16px;
             color: #ffffff;
-            background: linear-gradient(180deg, #739bff 0%, #557fff 100%);
+            background: linear-gradient(180deg, var(--accent) 0%, var(--accent-strong) 100%);
             cursor: pointer;
             font-weight: 800;
             letter-spacing: -.01em;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 14px 34px rgba(85, 127, 255, .24);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 14px 34px rgba(18, 93, 56, .2);
             transition: transform .24s cubic-bezier(.16, 1, .3, 1), filter .24s ease;
         }
 
@@ -374,12 +385,12 @@
             margin-top: 22px;
             padding-top: 18px;
             border-top: 1px solid var(--line);
-            color: #7d8493;
+            color: var(--muted);
             font-size: 12px;
         }
 
         .panel-footer strong {
-            color: #b8bfcd;
+            color: var(--text);
         }
 
         @keyframes breathe {
@@ -473,8 +484,10 @@
     <main class="login-shell">
         <header class="topbar" aria-label="Navigasi login admin">
             <a href="{{ route('landing.index') }}" class="brand">
-                <span class="brand-mark">H</span>
-                <span>MLUP Academy</span>
+                <span class="brand-mark">
+                    <x-brand-mark style="width: 18px; height: 18px;" />
+                </span>
+                <span class="font-serif italic" style="font-weight:600; font-family: 'Fraunces', Georgia, serif;">MLUP <span style="font-style:normal; font-weight:400; font-family: ui-sans-serif, system-ui, sans-serif;">Academy</span></span>
             </a>
             <a href="{{ route('landing.index') }}" class="back-link">Kembali ke landing</a>
         </header>
@@ -485,24 +498,6 @@
             <p>
                 Pantau klik CTA, pesan masuk WhatsApp, grouping referral, dan follow-up mahasiswa dari satu dashboard yang rapi.
             </p>
-
-            <div class="signal-grid" aria-label="Ringkasan fitur dashboard">
-                <div class="signal-card wide">
-                    <span class="signal-label">Workflow</span>
-                    <strong class="signal-value">Lead masuk sampai follow-up</strong>
-                    <div class="signal-text">Setiap percakapan disimpan sebagai kontak, event analytics, dan status tindak lanjut admin.</div>
-                </div>
-                <div class="signal-card">
-                    <span class="signal-label">Routing</span>
-                    <strong class="signal-value">Group A/B</strong>
-                    <div class="signal-text">Referral otomatis memisahkan calon mahasiswa ke grup yang sesuai.</div>
-                </div>
-                <div class="signal-card">
-                    <span class="signal-label">Access</span>
-                    <strong class="signal-value">Admin only</strong>
-                    <div class="signal-text">Dashboard hanya terbuka untuk akun dengan flag admin.</div>
-                </div>
-            </div>
         </section>
 
         <section class="login-panel" aria-label="Form login admin">

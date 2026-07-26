@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             HotlineDummySeeder::class,
             ArticleSeeder::class,
+            LandingPageSeeder::class,
         ]);
     }
 }

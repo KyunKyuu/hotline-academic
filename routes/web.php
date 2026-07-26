@@ -4,6 +4,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleManagementController;
 use App\Http\Controllers\HotlineDashboardController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\LandingPageManagementController;
 use App\Http\Controllers\Auth\AdminAuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,5 +36,28 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('/{article}/edit', [ArticleManagementController::class, 'edit'])->name('edit');
         Route::put('/{article}', [ArticleManagementController::class, 'update'])->name('update');
         Route::delete('/{article}', [ArticleManagementController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('admin/landing')->name('admin.landing.')->group(function (): void {
+        Route::get('/', [LandingPageManagementController::class, 'index'])->name('index');
+        Route::post('/hero', [LandingPageManagementController::class, 'updateHero'])->name('hero.update');
+
+        Route::prefix('moments')->name('moments.')->group(function (): void {
+            Route::get('/', [LandingPageManagementController::class, 'momentsIndex'])->name('index');
+            Route::get('/create', [LandingPageManagementController::class, 'momentsCreate'])->name('create');
+            Route::post('/', [LandingPageManagementController::class, 'momentsStore'])->name('store');
+            Route::get('/{moment}/edit', [LandingPageManagementController::class, 'momentsEdit'])->name('edit');
+            Route::put('/{moment}', [LandingPageManagementController::class, 'momentsUpdate'])->name('update');
+            Route::delete('/{moment}', [LandingPageManagementController::class, 'momentsDestroy'])->name('destroy');
+        });
+
+        Route::prefix('partners')->name('partners.')->group(function (): void {
+            Route::get('/', [LandingPageManagementController::class, 'partnersIndex'])->name('index');
+            Route::get('/create', [LandingPageManagementController::class, 'partnersCreate'])->name('create');
+            Route::post('/', [LandingPageManagementController::class, 'partnersStore'])->name('store');
+            Route::get('/{partner}/edit', [LandingPageManagementController::class, 'partnersEdit'])->name('edit');
+            Route::put('/{partner}', [LandingPageManagementController::class, 'partnersUpdate'])->name('update');
+            Route::delete('/{partner}', [LandingPageManagementController::class, 'partnersDestroy'])->name('destroy');
+        });
     });
 });

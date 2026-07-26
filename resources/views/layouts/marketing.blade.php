@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @php
-        $metaTitle = $title ?? 'MLUP Academy — Unggul dalam Ilmu, Kuat dalam Iman';
+        $metaTitle = $title ?? 'MLUP Academy';
         $metaDescription = $description ?? 'MLUP (Muslim Level Up) Academy — komunitas pendidikan muslim Indonesia yang mempertemukan keunggulan akademik dengan kekuatan keislaman.';
     @endphp
     <meta name="description" content="{{ $metaDescription }}">

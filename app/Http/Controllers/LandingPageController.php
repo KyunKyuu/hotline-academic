@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\WaAnalyticsEvent;
+use App\Models\LandingSetting;
+use App\Models\ActivityMoment;
+use App\Models\Partner;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -18,11 +21,66 @@ class LandingPageController extends Controller
         $gallery = array_map(fn (array $item) => $this->attachExists($item, 'gallery'), $content['gallery']);
 
         $content['approachPhotos'] = array_slice($gallery, 0, 3);
-        $content['proofGallery'] = array_slice($gallery, 3);
-        $content['partners'] = array_map([$this, 'withLogo'], $content['partners']);
+        
+        // Dynamic proof gallery (Activity Moments)
+        $dbMoments = ActivityMoment::orderBy('order')->orderBy('id')->get();
+        if ($dbMoments->isNotEmpty()) {
+            $content['proofGallery'] = $dbMoments->map(function ($moment) {
+                return [
+                    'file' => $moment->image,
+                    'caption' => $moment->caption,
+                    'exists' => is_file(public_path('images/gallery/' . $moment->image)),
+                ];
+            })->toArray();
+        } else {
+            $content['proofGallery'] = array_slice($gallery, 3);
+        }
+
+        // Dynamic partners (Communities)
+        $dbPartners = Partner::orderBy('id')->get();
+        if ($dbPartners->isNotEmpty()) {
+            $content['partners'] = $dbPartners->map(function ($partner) {
+                return [
+                    'slug' => $partner->slug,
+                    'name' => $partner->name,
+                    'tagline' => $partner->tagline ?? 'Komunitas mitra MLUP Academy',
+                    'logo' => [
+                        'file' => $partner->logo,
+                        'caption' => $partner->name,
+                        'exists' => $partner->logo && is_file(public_path('images/partners/' . $partner->logo)),
+                    ],
+                    'profile' => $partner->profile,
+                    'activities' => $partner->activities ?? [],
+                ];
+            })->toArray();
+        } else {
+            $content['partners'] = array_map([$this, 'withLogo'], $content['partners']);
+        }
+
         $content['decor'] = array_map(fn (array $item) => $this->attachExists($item, 'gallery'), $content['decor']);
         $content['latestArticles'] = Article::query()->published()->latest('published_at')->limit(3)->get();
-        $content['heroVideoExists'] = is_file(public_path('videos/hero.mp4'));
+        
+        // Dynamic hero settings
+        $heroSetting = LandingSetting::first();
+        if ($heroSetting) {
+            $content['hero_type'] = $heroSetting->hero_type;
+            $content['hero_image'] = $heroSetting->hero_image;
+            $content['hero_video'] = $heroSetting->hero_video;
+            $content['hero_title'] = $heroSetting->hero_title;
+            $content['hero_subtitle'] = $heroSetting->hero_subtitle;
+            
+            $hasCustomVideo = ($heroSetting->hero_video && is_file(public_path('videos/' . $heroSetting->hero_video)));
+            $hasDefaultVideo = is_file(public_path('videos/hero.mp4'));
+            $content['heroVideoExists'] = ($heroSetting->hero_type === 'video' && ($hasCustomVideo || $hasDefaultVideo));
+        } else {
+            $content['hero_type'] = 'pattern';
+            $content['hero_image'] = null;
+            $content['hero_video'] = null;
+            $content['hero_title'] = 'Unggul dalam Ilmu.';
+            $content['hero_subtitle'] = 'Satu ruang belajar bagi pelajar dan mahasiswa muslim Indonesia — tempat akademik dan keislaman tumbuh bersama.';
+            $content['heroVideoExists'] = is_file(public_path('videos/hero.mp4'));
+        }
+        
         unset($content['gallery']);
 
         return view('landing.index', $content);
@@ -30,14 +88,32 @@ class LandingPageController extends Controller
 
     public function community(string $slug): View
     {
-        $partner = collect($this->landingContent()['partners'])
-            ->firstWhere('slug', $slug);
+        $partner = Partner::where('slug', $slug)->first();
 
-        abort_if($partner === null, 404);
+        if ($partner) {
+            $mappedPartner = [
+                'slug' => $partner->slug,
+                'name' => $partner->name,
+                'tagline' => $partner->tagline ?? 'Komunitas mitra MLUP Academy',
+                'logo' => [
+                    'file' => $partner->logo,
+                    'caption' => $partner->name,
+                    'exists' => $partner->logo && is_file(public_path('images/partners/' . $partner->logo)),
+                ],
+                'profile' => $partner->profile,
+                'activities' => $partner->activities ?? [],
+            ];
+        } else {
+            $mappedPartner = collect($this->landingContent()['partners'])
+                ->firstWhere('slug', $slug);
+
+            abort_if($mappedPartner === null, 404);
+            $mappedPartner = $this->withLogo($mappedPartner);
+        }
 
         return view('landing.community', [
-            'partner' => $this->withLogo($partner),
-            'title' => $partner['name'].' — MLUP Academy',
+            'partner' => $mappedPartner,
+            'title' => $mappedPartner['name'].' — MLUP Academy',
         ]);
     }
 

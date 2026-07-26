@@ -14,7 +14,8 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
+# Commented out to allow committing compiled Vite assets for Hostinger Git deployment
+# /public/build
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage
