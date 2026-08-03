@@ -17,11 +17,14 @@
         <div class="card metric"><span class="muted">Waiting Admin</span><strong>{{ $summary['waiting_admin'] }}</strong></div>
     </div>
 
-    <div class="grid grid-2">
-        <div class="card section">
+    <div class="grid grid-3">
+        <!-- Filter Kontak -->
+        <div class="card section" style="display:flex; flex-direction:column;">
             <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:16px;">Filter Kontak</h3>
-            <form method="get" class="filters">
-                <div style="flex:1 1 180px; display:flex; flex-direction:column; gap:6px;">
+            <form method="get" class="filters" style="display:flex; flex-direction:column; gap:12px;">
+                <input type="hidden" name="segment" value="{{ $segment }}">
+                
+                <div style="display:flex; flex-direction:column; gap:6px;">
                     <label>Group</label>
                     <select name="group">
                         <option value="">Semua</option>
@@ -29,11 +32,23 @@
                         <option value="B" @selected($group === 'B')>Group B</option>
                     </select>
                 </div>
-                <div style="flex:1 1 220px; display:flex; flex-direction:column; gap:6px;">
+                
+                <div style="display:flex; flex-direction:column; gap:6px;">
                     <label>Kampus</label>
                     <input type="text" name="campus" value="{{ $campus }}" placeholder="Contoh: Universitas Indonesia">
                 </div>
-                <div style="flex:1 1 220px; display:flex; flex-direction:column; gap:6px;">
+
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <label>Kode Referral</label>
+                    <select name="referral_code">
+                        <option value="">Semua</option>
+                        @foreach($referralCodesList as $ref)
+                            <option value="{{ $ref->code }}" @selected($referralCode === $ref->code)>{{ $ref->name }} ({{ $ref->code }})</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:6px;">
                     <label>Status Follow Up</label>
                     <select name="status">
                         <option value="">Semua</option>
@@ -42,22 +57,39 @@
                         <option value="done" @selected($status === 'done')>Done</option>
                     </select>
                 </div>
-                <div style="display:flex; align-items:end;">
+
+                <div style="margin-top:4px;">
                     <button type="submit" class="button button-primary" style="width:100%;">Filter</button>
                 </div>
             </form>
         </div>
 
-        <div class="card section">
+        <!-- Top Kampus -->
+        <div class="card section" style="display:flex; flex-direction:column; max-height:430px;">
             <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:16px;">Top Kampus</h3>
-            <div class="stack" style="gap:12px;">
+            <div style="flex:1; overflow-y:auto; padding-right:8px; display:flex; flex-direction:column; gap:12px;">
                 @forelse($campusBreakdown as $item)
-                    <div style="display:flex; justify-content:space-between; gap:16px; font-size:14px; border-bottom: 1px solid var(--hairline); padding-bottom:8px;">
+                    <a href="{{ request()->fullUrlWithQuery(['campus' => $item->campus]) }}" class="clickable-item">
                         <span>{{ $item->campus }}</span>
                         <strong>{{ $item->total }}</strong>
-                    </div>
+                    </a>
                 @empty
                     <p class="muted" style="font-size:14px;">Belum ada data kampus.</p>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Top Referral -->
+        <div class="card section" style="display:flex; flex-direction:column; max-height:430px;">
+            <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:16px;">Top Referral</h3>
+            <div style="flex:1; overflow-y:auto; padding-right:8px; display:flex; flex-direction:column; gap:12px;">
+                @forelse($referralBreakdown as $item)
+                    <a href="{{ request()->fullUrlWithQuery(['referral_code' => $item->code]) }}" class="clickable-item">
+                        <span>{{ $item->name }} ({{ $item->code }})</span>
+                        <strong>{{ $item->usage_count }}</strong>
+                    </a>
+                @empty
+                    <p class="muted" style="font-size:14px;">Belum ada data referral.</p>
                 @endforelse
             </div>
         </div>
@@ -93,6 +125,22 @@
             background-color: var(--surface-3);
             border: 1px solid var(--hairline-strong);
         }
+        .clickable-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            font-size: 13.5px;
+            border-bottom: 1px solid var(--hairline);
+            padding-bottom: 8px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.15s;
+        }
+        .clickable-item:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            padding-left: 4px;
+        }
     </style>
 
     <div class="card section">
@@ -106,6 +154,26 @@
             <a href="{{ request()->fullUrlWithQuery(['segment' => 'group_a']) }}" class="tab-link {{ $segment === 'group_a' ? 'active' : '' }}">Group A</a>
             <a href="{{ request()->fullUrlWithQuery(['segment' => 'group_b']) }}" class="tab-link {{ $segment === 'group_b' ? 'active' : '' }}">Group B</a>
         </div>
+
+        @if(request()->anyFilled(['group', 'campus', 'status', 'referral_code']))
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px; flex-wrap:wrap; font-size:13px; background: var(--surface-2); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--hairline);">
+                <span class="muted">Filter aktif:</span>
+                @if(filled($group))
+                    <span class="pill" style="background:var(--surface-3); border:1px solid var(--hairline-strong); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">Group: {{ $group }}</span>
+                @endif
+                @if(filled($campus))
+                    <span class="pill" style="background:var(--surface-3); border:1px solid var(--hairline-strong); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">Kampus: {{ $campus }}</span>
+                @endif
+                @if(filled($referralCode))
+                    <span class="pill" style="background:var(--surface-3); border:1px solid var(--hairline-strong); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">Referral: {{ $referralCode }}</span>
+                @endif
+                @if(filled($status))
+                    <span class="pill" style="background:var(--surface-3); border:1px solid var(--hairline-strong); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">Status: {{ $status }}</span>
+                @endif
+                <a href="{{ route('hotline.dashboard', ['segment' => $segment]) }}" style="color:var(--semantic-error); text-decoration:none; font-weight:600; margin-left:8px; font-size: 12.5px;">Hapus Semua Filter</a>
+            </div>
+        @endif
+
         <table class="table">
             <thead>
                 <tr>

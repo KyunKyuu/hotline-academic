@@ -17,12 +17,14 @@ class HotlineDashboardController extends Controller
         $group = $request->query('group');
         $campus = $request->query('campus');
         $status = $request->query('status');
+        $referralCode = $request->query('referral_code');
         $segment = $request->query('segment', 'all');
 
         $contactsQuery = WaContact::query()
             ->with(['followUps' => fn ($query) => $query->latest('id'), 'referralCode'])
             ->when(filled($group), fn ($query) => $query->where('group_type', $group))
             ->when(filled($campus), fn ($query) => $query->where('campus', 'like', '%' . $campus . '%'))
+            ->when(filled($referralCode), fn ($query) => $query->where('referral_code', $referralCode))
             ->when(filled($status), function ($query) use ($status) {
                 $query->whereHas('followUps', fn ($followUp) => $followUp->where('status', $status));
             });
@@ -62,10 +64,15 @@ class HotlineDashboardController extends Controller
             ->whereNotNull('campus')
             ->groupBy('campus')
             ->orderByDesc('total')
-            ->limit(10)
             ->get();
 
-        return view('hotline.dashboard', compact('contacts', 'summary', 'campusBreakdown', 'group', 'campus', 'status', 'segment'));
+        $referralCodesList = ReferralCode::orderBy('code')->get();
+        $referralBreakdown = ReferralCode::orderByDesc('usage_count')->get();
+
+        return view('hotline.dashboard', compact(
+            'contacts', 'summary', 'campusBreakdown', 'group', 'campus', 'status', 'segment',
+            'referralCode', 'referralCodesList', 'referralBreakdown'
+        ));
     }
 
     public function show(WaContact $contact): View
