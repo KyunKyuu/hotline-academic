@@ -19,6 +19,8 @@ class HotlineDashboardController extends Controller
         $status = $request->query('status');
         $referralCode = $request->query('referral_code');
         $segment = $request->query('segment', 'all');
+        $search = $request->query('search');
+        $limit = max(5, min(100, (int) $request->query('limit', 15)));
 
         $contactsQuery = WaContact::query()
             ->with(['followUps' => fn ($query) => $query->latest('id'), 'referralCode'])
@@ -27,6 +29,13 @@ class HotlineDashboardController extends Controller
             ->when(filled($referralCode), fn ($query) => $query->where('referral_code', $referralCode))
             ->when(filled($status), function ($query) use ($status) {
                 $query->whereHas('followUps', fn ($followUp) => $followUp->where('status', $status));
+            })
+            ->when(filled($search), function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('wa_name', 'like', '%' . $search . '%')
+                      ->orWhere('phone_number', 'like', '%' . $search . '%');
+                });
             });
 
         // Apply segment filters
@@ -47,7 +56,7 @@ class HotlineDashboardController extends Controller
         }
 
         $contacts = $contactsQuery->latest('last_message_at')
-            ->paginate(15)
+            ->paginate($limit)
             ->withQueryString();
 
         $summary = [
@@ -71,7 +80,7 @@ class HotlineDashboardController extends Controller
 
         return view('hotline.dashboard', compact(
             'contacts', 'summary', 'campusBreakdown', 'group', 'campus', 'status', 'segment',
-            'referralCode', 'referralCodesList', 'referralBreakdown'
+            'referralCode', 'referralCodesList', 'referralBreakdown', 'search', 'limit'
         ));
     }
 

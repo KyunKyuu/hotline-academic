@@ -155,7 +155,7 @@
             <a href="{{ request()->fullUrlWithQuery(['segment' => 'group_b']) }}" class="tab-link {{ $segment === 'group_b' ? 'active' : '' }}">Group B</a>
         </div>
 
-        @if(request()->anyFilled(['group', 'campus', 'status', 'referral_code']))
+        @if(request()->anyFilled(['group', 'campus', 'status', 'referral_code', 'search']))
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px; flex-wrap:wrap; font-size:13px; background: var(--surface-2); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--hairline);">
                 <span class="muted">Filter aktif:</span>
                 @if(filled($group))
@@ -170,9 +170,43 @@
                 @if(filled($status))
                     <span class="pill" style="background:var(--surface-3); border:1px solid var(--hairline-strong); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">Status: {{ $status }}</span>
                 @endif
+                @if(filled($search))
+                    <span class="pill" style="background:var(--surface-3); border:1px solid var(--hairline-strong); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">Cari: "{{ $search }}"</span>
+                @endif
                 <a href="{{ route('hotline.dashboard', ['segment' => $segment]) }}" style="color:var(--semantic-error); text-decoration:none; font-weight:600; margin-left:8px; font-size: 12.5px;">Hapus Semua Filter</a>
             </div>
         @endif
+
+        <!-- Search & Limit Form -->
+        <form method="get" action="{{ route('hotline.dashboard') }}" style="display:flex; gap:12px; margin-bottom:20px; align-items:center; flex-wrap:wrap; background: var(--surface-1); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--hairline);">
+            <input type="hidden" name="segment" value="{{ $segment }}">
+            <input type="hidden" name="group" value="{{ $group }}">
+            <input type="hidden" name="campus" value="{{ $campus }}">
+            <input type="hidden" name="referral_code" value="{{ $referralCode }}">
+            <input type="hidden" name="status" value="{{ $status }}">
+            
+            <div style="flex:1 1 300px; display:flex; gap:8px; align-items:center;">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama, wa name, atau nomor..." style="width:100%; height:36px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--hairline); background: var(--surface-2); color: var(--ink); font-size: 13.5px;">
+            </div>
+            
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span class="muted" style="font-size:13px; white-space:nowrap;">Tampilkan:</span>
+                <select name="limit" style="width:80px; height:36px; border-radius:6px; border:1px solid var(--hairline); background:var(--surface-2); color:var(--ink); padding: 0 6px; font-size: 13.5px;" onchange="this.form.submit()">
+                    <option value="5" @selected($limit == 5)>5</option>
+                    <option value="15" @selected($limit == 15)>15</option>
+                    <option value="30" @selected($limit == 30)>30</option>
+                    <option value="50" @selected($limit == 50)>50</option>
+                    <option value="100" @selected($limit == 100)>100</option>
+                </select>
+            </div>
+            
+            <div style="display:flex; gap:8px;">
+                <button type="submit" class="button button-primary" style="height:36px; padding: 0 16px; font-size: 13.5px; border-radius: 6px;">Cari</button>
+                @if(filled($search))
+                    <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}" class="button button-secondary" style="height:36px; display:inline-flex; align-items:center; justify-content:center; padding: 0 16px; text-decoration:none; font-size: 13.5px; border-radius: 6px;">Reset</a>
+                @endif
+            </div>
+        </form>
 
         <table class="table">
             <thead>
