@@ -63,8 +63,49 @@
         </div>
     </div>
 
+    <style>
+        .tabs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-bottom: 1px solid var(--hairline);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .tab-link {
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink-subtle);
+            border-radius: 6px;
+            transition: all 0.15s;
+            background: transparent;
+            border: 1px solid transparent;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .tab-link:hover {
+            color: var(--ink);
+            background-color: var(--surface-2);
+        }
+        .tab-link.active {
+            color: var(--ink);
+            background-color: var(--surface-3);
+            border: 1px solid var(--hairline-strong);
+        }
+    </style>
+
     <div class="card section">
         <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:16px;">Kontak Hotline</h3>
+        
+        <div class="tabs-container">
+            <a href="{{ request()->fullUrlWithQuery(['segment' => 'all']) }}" class="tab-link {{ $segment === 'all' ? 'active' : '' }}">Semua</a>
+            <a href="{{ request()->fullUrlWithQuery(['segment' => 'pending']) }}" class="tab-link {{ $segment === 'pending' ? 'active' : '' }}">Belum Ditangani</a>
+            <a href="{{ request()->fullUrlWithQuery(['segment' => 'in_progress']) }}" class="tab-link {{ $segment === 'in_progress' ? 'active' : '' }}">Sedang Diproses</a>
+            <a href="{{ request()->fullUrlWithQuery(['segment' => 'done']) }}" class="tab-link {{ $segment === 'done' ? 'active' : '' }}">Selesai</a>
+            <a href="{{ request()->fullUrlWithQuery(['segment' => 'group_a']) }}" class="tab-link {{ $segment === 'group_a' ? 'active' : '' }}">Group A</a>
+            <a href="{{ request()->fullUrlWithQuery(['segment' => 'group_b']) }}" class="tab-link {{ $segment === 'group_b' ? 'active' : '' }}">Group B</a>
+        </div>
         <table class="table">
             <thead>
                 <tr>

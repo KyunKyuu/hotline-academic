@@ -17,15 +17,34 @@ class HotlineDashboardController extends Controller
         $group = $request->query('group');
         $campus = $request->query('campus');
         $status = $request->query('status');
+        $segment = $request->query('segment', 'all');
 
-        $contacts = WaContact::query()
+        $contactsQuery = WaContact::query()
             ->with(['followUps' => fn ($query) => $query->latest('id')])
             ->when(filled($group), fn ($query) => $query->where('group_type', $group))
-            ->when(filled($campus), fn ($query) => $query->where('campus', $campus))
+            ->when(filled($campus), fn ($query) => $query->where('campus', 'like', '%' . $campus . '%'))
             ->when(filled($status), function ($query) use ($status) {
                 $query->whereHas('followUps', fn ($followUp) => $followUp->where('status', $status));
-            })
-            ->latest('last_message_at')
+            });
+
+        // Apply segment filters
+        if ($segment === 'pending') {
+            $contactsQuery->where(function ($query) {
+                $query->whereHas('followUps', fn ($fu) => $fu->where('status', 'pending'))
+                      ->orWhereDoesntHave('followUps')
+                      ->orWhere('chat_state', 'waiting_admin');
+            });
+        } elseif ($segment === 'in_progress') {
+            $contactsQuery->whereHas('followUps', fn ($fu) => $fu->where('status', 'in_progress'));
+        } elseif ($segment === 'done') {
+            $contactsQuery->whereHas('followUps', fn ($fu) => $fu->where('status', 'done'));
+        } elseif ($segment === 'group_a') {
+            $contactsQuery->where('group_type', 'A');
+        } elseif ($segment === 'group_b') {
+            $contactsQuery->where('group_type', 'B');
+        }
+
+        $contacts = $contactsQuery->latest('last_message_at')
             ->paginate(15)
             ->withQueryString();
 
@@ -51,7 +70,7 @@ class HotlineDashboardController extends Controller
             ->limit(10)
             ->get();
 
-        return view('hotline.dashboard', compact('contacts', 'summary', 'campusBreakdown', 'latestEvents', 'group', 'campus', 'status'));
+        return view('hotline.dashboard', compact('contacts', 'summary', 'campusBreakdown', 'latestEvents', 'group', 'campus', 'status', 'segment'));
     }
 
     public function show(WaContact $contact): View

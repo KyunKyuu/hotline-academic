@@ -56,55 +56,52 @@
     </div>
 
     <div class="card section">
-        <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:16px;">Riwayat Pesan Chat</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th style="width:120px;">Arah</th>
-                    <th>Pesan</th>
-                    <th style="width:180px;">Waktu</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($contact->messages as $message)
-                    <tr>
-                        <td>
-                            <span class="pill" style="{{ $message->direction === 'incoming' ? 'background:#d8ecd9; color:#125d38;' : 'background:#e6e5e0; color:#5a5852;' }}">
-                                {{ $message->direction }}
-                            </span>
-                        </td>
-                        <td>{{ $message->body }}</td>
-                        <td class="muted">{{ $message->sent_at?->format('d M Y H:i') }}</td>
-                    </tr>
-                @empty
-                    <tr><td colspan="3" class="muted" style="text-align: center; padding: 24px 0;">Belum ada pesan masuk/keluar.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+        <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:16px;">Riwayat Chat WhatsApp</h3>
+        
+        <div style="background: #0b141a; border-radius: 12px; border: 1px solid var(--hairline); padding: 24px; display: flex; flex-direction: column; gap: 16px; max-height: 480px; overflow-y: auto;">
+            @forelse($contact->messages->reverse() as $message)
+                @if($message->direction === 'inbound')
+                    <!-- Student message (Left) -->
+                    <div style="display: flex; flex-direction: column; align-self: flex-start; max-width: 70%;">
+                        <div style="background: #202c33; color: var(--ink); padding: 10px 14px; border-radius: 0px 12px 12px 12px; font-size: 14.5px; line-height: 1.5; box-shadow: 0 1px 2px rgba(0,0,0,0.15); word-break: break-word; white-space: pre-wrap;">{{ $message->body }}</div>
+                        <span style="font-size: 11px; color: var(--ink-subtle); margin-top: 4px; padding-left: 4px;">{{ $message->sent_at?->format('d M Y H:i') }}</span>
+                    </div>
+                @else
+                    <!-- Bot/Admin message (Right) -->
+                    <div style="display: flex; flex-direction: column; align-self: flex-end; max-width: 70%; align-items: flex-end;">
+                        <div style="background: #005c4b; color: #e9edef; padding: 10px 14px; border-radius: 12px 0px 12px 12px; font-size: 14.5px; line-height: 1.5; box-shadow: 0 1px 2px rgba(0,0,0,0.15); word-break: break-word; white-space: pre-wrap;">{{ $message->body }}</div>
+                        <span style="font-size: 11px; color: var(--ink-subtle); margin-top: 4px; padding-right: 4px;">{{ $message->sent_at?->format('d M Y H:i') }}</span>
+                    </div>
+                @endif
+            @empty
+                <p class="muted" style="text-align: center; padding: 24px 0; width: 100%;">Belum ada riwayat pesan chat.</p>
+            @endforelse
+        </div>
     </div>
 
     <div class="card section">
-        <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:16px;">Log Event Analisis</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Jenis Event</th>
-                    <th>Referensi</th>
-                    <th style="width:180px;">Waktu</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($contact->analyticsEvents as $event)
-                    <tr>
-                        <td><code>{{ $event->event_type }}</code></td>
-                        <td>{{ $event->reference ?: '-' }}</td>
-                        <td class="muted">{{ $event->occurred_at?->format('d M Y H:i') }}</td>
-                    </tr>
-                @empty
-                    <tr><td colspan="3" class="muted" style="text-align: center; padding: 24px 0;">Belum ada event analitik terekam.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+        <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:20px;">Log Aktivitas & Event Analisis</h3>
+        
+        <div style="position: relative; padding-left: 24px; margin-left: 8px; border-left: 2px solid var(--hairline); display: flex; flex-direction: column; gap: 20px;">
+            @forelse($contact->analyticsEvents as $event)
+                <div style="position: relative;">
+                    <!-- Timeline Dot -->
+                    <div style="position: absolute; left: -31px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: {{ $event->event_type === 'referral_submitted' ? 'var(--primary)' : ($event->event_type === 'biodata_completed' ? 'var(--semantic-success)' : 'var(--ink-tertiary)') }}; border: 3px solid var(--canvas);"></div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap;">
+                        <div>
+                            <code style="font-size: 13px; font-weight: 600; color: var(--ink);">{{ $event->event_type }}</code>
+                            @if($event->reference)
+                                <span class="pill" style="font-size: 11.5px; margin-left: 8px; font-weight: 500;">{{ $event->reference }}</span>
+                            @endif
+                        </div>
+                        <span class="mini" style="color: var(--ink-subtle);">{{ $event->occurred_at?->format('d M Y H:i') }}</span>
+                    </div>
+                </div>
+            @empty
+                <p class="muted" style="padding: 12px 0;">Belum ada log event yang terekam.</p>
+            @endforelse
+        </div>
     </div>
 </div>
 @endsection
