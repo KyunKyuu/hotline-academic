@@ -1,967 +1,1653 @@
-@extends('layouts.marketing')
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hotline Akademik — MLUP Academy</title>
+<meta name="description" content="Hotline Akademik MLUP: pendampingan akademik dan non-akademik untuk mahasiswa yang tidak ingin berjuang sendiri.">
 
-@section('content')
+<link rel="icon" type="image/png" href="{{ asset('images/brand/logo.png') }}">
+<link rel="apple-touch-icon" href="{{ asset('images/brand/logo.png') }}">
 
-    {{-- ============ HERO — full-bleed, image-led ============ --}}
-    <section class="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-surface-dark text-on-dark">
-        <div class="absolute inset-0">
-            @if ($hero_type === 'video' && $heroVideoExists)
-                <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover">
-                    @if ($hero_video && is_file(public_path('videos/' . $hero_video)))
-                        <source src="{{ asset('videos/' . $hero_video) }}" type="video/mp4">
-                    @else
-                        <source src="{{ asset('videos/hero.mp4') }}" type="video/mp4">
-                    @endif
-                </video>
-                <div class="absolute inset-0 bg-surface-dark/50"></div>
-            @elseif ($hero_type === 'image' && $hero_image && is_file(public_path('images/hero/' . $hero_image)))
-                <img src="{{ asset('images/hero/' . $hero_image) }}" alt="Hero Background" class="absolute inset-0 h-full w-full object-cover">
-                <div class="absolute inset-0 bg-surface-dark/50"></div>
-            @else
-                <div class="pattern-lattice absolute inset-0 text-on-dark/[0.05]"></div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-                <svg viewBox="0 0 800 800" preserveAspectRatio="xMidYMid slice"
-                    class="absolute left-1/2 top-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2 text-primary/25 sm:h-[110%] sm:w-[110%]">
-                    <circle cx="560" cy="230" r="150" fill="none" stroke="currentColor" stroke-width="2" />
-                    <path d="M 560 90 A 150 150 0 1 0 690 300 A 118 118 0 1 1 560 90 Z" fill="currentColor" opacity="0.9" />
-                    <g stroke="currentColor" stroke-width="1.6" opacity="0.5">
-                        <path d="M120 640 h230" />
-                        <path d="M120 590 h230 v230 h-230 Z" />
-                        <path d="M150 590 v-40 M320 590 v-40" stroke-width="10" stroke-linecap="round" />
-                        <path d="M235 550 v-90 M180 500 h110" />
-                    </g>
-                    <g stroke="currentColor" stroke-width="1.2" opacity="0.4">
-                        <path d="M400 60 L410 95 L446 100 L419 124 L427 160 L400 140 L373 160 L381 124 L354 100 L390 95 Z" />
-                    </g>
-                </svg>
-            @endif
+<style>
+/* ─── DESIGN TOKENS (mirroring MLUP system) ─── */
+:root {
+  --font-serif: 'Fraunces', 'Times New Roman', serif;
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 
-            <div
-                class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-surface-dark via-surface-dark/85 to-transparent">
-            </div>
-            <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-surface-dark/70 to-transparent"></div>
+  --color-primary: #c2793a;
+  --color-primary-active: #9c5f2b;
+  --color-ink: #23261f;
+  --color-body: #40453b;
+  --color-muted: #666b5d;
+  --color-muted-soft: #8d9284;
+  --color-hairline: #e0e2d8;
+  --color-canvas: #f8f8f4;
+  --color-surface-soft: #f0f1ea;
+  --color-surface-card: #e7e9de;
+  --color-surface-dark: #20291f;
+  --color-surface-dark-elevated: #2b3729;
+  --color-on-primary: #fffaf3;
+  --color-on-dark: #f2f4ec;
+  --color-on-dark-soft: #aab5a0;
+  --color-accent-teal: #5f8a52;
+  --color-accent-amber: #d1a13a;
+  --color-accent-blue: #3f728f;
 
-            <div
-                class="blob motion-safe:animate-float pointer-events-none absolute right-[10%] top-[18%] h-72 w-72 bg-primary/20">
-            </div>
-            <div
-                class="blob motion-safe:animate-float-slow pointer-events-none absolute left-[8%] bottom-[12%] h-64 w-64 bg-accent-blue/15">
-            </div>
-        </div>
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-pill: 9999px;
+}
 
-        <div class="container-app relative z-10 pb-16 pt-40 sm:pb-24">
-            <span
-                class="inline-flex items-center gap-2 rounded-pill bg-surface-dark-elevated px-4 py-1.5 text-xs font-medium uppercase tracking-[0.14em] text-on-dark-soft"
-                data-reveal>
-                <span class="relative flex h-1.5 w-1.5">
-                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-                    <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary"></span>
-                </span>
-                Komunitas Pendidikan Muslim Indonesia
-            </span>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-            <h1 class="mt-8 max-w-4xl font-serif text-6xl leading-[1.02] tracking-tight text-balance sm:text-7xl lg:text-[6rem]"
-                data-reveal data-reveal-delay="1">
-                @if ($hero_title)
-                    @php
-                        $parts = explode('.', $hero_title, 2);
-                    @endphp
-                    @if (count($parts) > 1 && filled(trim($parts[1])))
-                        {{ trim($parts[0]) }}.
-                        <span class="block italic text-primary">{{ trim($parts[1]) }}</span>
-                    @else
-                        {{ $hero_title }}
-                    @endif
-                @else
-                    Unggul dalam Ilmu.
-                    <span class="block italic text-primary">Kuat dalam Iman.</span>
-                @endif
-            </h1>
+html { scroll-behavior: smooth; }
 
-            <p class="mt-8 max-w-lg text-xl leading-relaxed text-on-dark-soft" data-reveal data-reveal-delay="2">
-                {{ $hero_subtitle ?? 'Satu ruang belajar bagi pelajar dan mahasiswa muslim Indonesia — tempat akademik dan keislaman tumbuh bersama.' }}
-            </p>
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
 
-            <div class="mt-10 flex flex-wrap items-center gap-4" data-reveal data-reveal-delay="3">
-                <a href="{{ route('landing.whatsapp.redirect', ['source' => 'hero', 'campaign' => 'gabung_komunitas']) }}"
-                    class="glow-primary inline-flex h-14 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-on-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-primary-active">
-                    Gabung Komunitas
-                </a>
-                <a href="#tentang"
-                    class="inline-flex h-14 items-center justify-center rounded-md border border-white/15 px-8 text-base font-medium text-on-dark transition hover:-translate-y-0.5 hover:bg-white/5">
-                    Kenali Kami
-                </a>
-            </div>
-        </div>
+/* ─── LAYOUT ─── */
+.container-app {
+  width: min(1200px, 100% - 2.5rem);
+  margin-inline: auto;
+}
 
-        <a href="#tentang"
-            class="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-on-dark-soft sm:flex">
-            <span class="text-xs uppercase tracking-[0.2em]">Gulir</span>
-            <svg class="h-4 w-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M19 9l-7 7-7-7" />
-            </svg>
-        </a>
-    </section>
+/* ─── SCROLL PROGRESS ─── */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--color-primary);
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 100;
+  transition: transform 0.05s linear;
+}
 
-    {{-- ============ MARQUEE ============ --}}
-    <div class="group overflow-hidden border-y border-hairline bg-surface-soft py-5">
-        <div class="flex w-max animate-marquee gap-12 whitespace-nowrap group-hover:[animation-play-state:paused]">
-            @for ($i = 0; $i < 2; $i++)
-                @foreach ($fields as $field)
-                    <span class="flex items-center gap-4 text-base font-medium uppercase tracking-[0.1em] text-muted">
-                        {{ $field }}
-                        <span class="h-1.5 w-1.5 rounded-full bg-primary/60"></span>
-                    </span>
-                @endforeach
-            @endfor
-        </div>
+/* ─── NAVBAR ─── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(248, 248, 244, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-hairline);
+}
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.navbar-brand-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--color-primary);
+  font-weight: 400;
+}
+.navbar-brand-text {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  color: var(--color-ink);
+  font-weight: 400;
+}
+.navbar-brand-text em {
+  font-style: italic;
+  color: var(--color-primary);
+}
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+.navbar-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.navbar-links a:hover { color: var(--color-ink); }
+.navbar-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.2s;
+}
+.navbar-cta:hover {
+  background: var(--color-primary-active);
+  transform: translateY(-1px);
+}
+.navbar-mobile-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  width: 40px; height: 40px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink);
+}
+
+/* ─── HERO ─── */
+.hero {
+  background: var(--color-surface-dark);
+  position: relative;
+  overflow: hidden;
+  padding: 100px 0 88px;
+}
+.hero-blob-1 {
+  position: absolute;
+  right: 5%; top: 10%;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: rgba(194, 121, 58, 0.15);
+  filter: blur(60px);
+  pointer-events: none;
+  animation: float 10s ease-in-out infinite;
+}
+.hero-blob-2 {
+  position: absolute;
+  left: -5%; bottom: -10%;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: rgba(95, 138, 82, 0.12);
+  filter: blur(60px);
+  pointer-events: none;
+  animation: float 14s ease-in-out infinite reverse;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent-amber);
+  margin-bottom: 28px;
+}
+.hero-eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-amber);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.hero h1 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(38px, 6vw, 72px);
+  line-height: 1.0;
+  color: var(--color-on-dark);
+  letter-spacing: -0.025em;
+  max-width: 680px;
+  margin-bottom: 8px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--color-primary);
+}
+.hero-bigidea {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(15px, 2vw, 18px);
+  color: rgba(242, 244, 236, 0.45);
+  margin-bottom: 28px;
+  max-width: 520px;
+  line-height: 1.5;
+}
+.hero-desc {
+  font-size: clamp(16px, 2vw, 18px);
+  color: var(--color-on-dark-soft);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 28px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.25s cubic-bezier(.16,1,.3,1), box-shadow 0.3s;
+}
+.btn-primary:hover {
+  background: var(--color-primary-active);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -8px rgba(194,121,58,0.6);
+}
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 28px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--color-on-dark);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.25s;
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-2px);
+}
+.hero-stat-row {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hero-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(170,181,160,0.7);
+}
+.hero-stat-val {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: rgba(242,244,236,0.75);
+}
+
+/* ─── SECTIONS BASE ─── */
+.section {
+  padding: 88px 0;
+}
+.section-soft {
+  background: var(--color-surface-soft);
+}
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-eyebrow::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--color-primary);
+}
+.section-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--color-ink);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.section-title em { font-style: italic; color: var(--color-primary); }
+.section-lead {
+  font-size: 17px;
+  color: var(--color-muted);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+
+/* ─── MASALAH SECTION ─── */
+.masalah-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  .masalah-intro { grid-template-columns: 1fr; }
+}
+.masalah-card {
+  background: white;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  padding: 28px 28px 24px;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.masalah-card:hover {
+  box-shadow: 0 12px 40px -10px rgba(35,38,31,0.1);
+  transform: translateY(-2px);
+}
+.masalah-card.akademik { border-top: 3px solid var(--color-accent-teal); }
+.masalah-card.psikis { border-top: 3px solid var(--color-accent-amber); }
+.masalah-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.masalah-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.masalah-card.akademik .masalah-icon { background: rgba(95,138,82,0.12); }
+.masalah-card.psikis .masalah-icon { background: rgba(209,161,58,0.12); }
+.masalah-card-title { font-size: 15px; font-weight: 600; color: var(--color-ink); margin-bottom: 3px; }
+.masalah-card-sub { font-size: 12px; color: var(--color-muted); }
+.masalah-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.masalah-list li {
+  font-size: 14px;
+  color: var(--color-body);
+  padding: 7px 0 7px 18px;
+  position: relative;
+  border-bottom: 1px solid var(--color-hairline);
+  line-height: 1.5;
+}
+.masalah-list li:last-child { border-bottom: none; }
+.masalah-list li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--color-muted-soft);
+}
+.masalah-note {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-muted);
+  padding: 20px 0 0;
+  font-style: italic;
+}
+
+/* ─── FASILITATOR SECTION ─── */
+.fas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 640px) {
+  .fas-grid { grid-template-columns: 1fr; }
+}
+.fas-card {
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.fas-card.layer-2 {
+  background: white;
+  border: 1px solid var(--color-hairline);
+  order: -1;
+}
+.fas-card.layer-1 {
+  background: var(--color-surface-dark);
+}
+.fas-card-layer-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.layer-1 .fas-card-layer-label { color: var(--color-accent-amber); }
+.layer-2 .fas-card-layer-label { color: var(--color-accent-teal); }
+.fas-card-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+.layer-1 .fas-card-title { color: var(--color-on-dark); }
+.layer-2 .fas-card-title { color: var(--color-ink); }
+.fas-card-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.layer-1 .fas-card-desc { color: var(--color-on-dark-soft); }
+.layer-2 .fas-card-desc { color: var(--color-muted); }
+.fas-card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+}
+.layer-2 .fas-card-tag {
+  background: rgba(95,138,82,0.12);
+  color: var(--color-accent-teal);
+  border: 1px solid rgba(95,138,82,0.2);
+}
+.layer-1 .fas-card-tag {
+  background: rgba(209,161,58,0.15);
+  color: var(--color-accent-amber);
+  border: 1px solid rgba(209,161,58,0.25);
+}
+.fas-card-blob {
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.layer-1 .fas-card-blob { background: rgba(209,161,58,0.06); filter: blur(30px); }
+.layer-2 .fas-card-blob { background: rgba(95,138,82,0.08); filter: blur(30px); }
+
+/* ─── ALUR SECTION ─── */
+.alur-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  position: relative;
+}
+@media (max-width: 640px) {
+  .alur-grid { grid-template-columns: 1fr; gap: 16px; }
+  .alur-connector { display: none; }
+}
+.alur-connector {
+  position: absolute;
+  top: 40px; left: calc(33.33% + 12px);
+  width: calc(33.33% - 24px);
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-primary), rgba(194,121,58,0.3));
+}
+.alur-connector-2 {
+  left: calc(66.66% + 12px);
+  background: linear-gradient(90deg, rgba(194,121,58,0.3), var(--color-primary));
+}
+.alur-step {
+  padding: 24px 28px 28px;
+  position: relative;
+}
+.alur-step-num {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+.alur-step-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 8px;
+}
+.alur-step-desc {
+  font-size: 13.5px;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+.alur-note {
+  margin-top: 32px;
+  padding: 18px 22px;
+  background: rgba(194,121,58,0.07);
+  border: 1px solid rgba(194,121,58,0.2);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  color: var(--color-body);
+  line-height: 1.65;
+}
+.alur-note strong { color: var(--color-ink); font-weight: 600; }
+
+/* ─── USP SECTION ─── */
+.usp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media (max-width: 768px) {
+  .usp-grid { grid-template-columns: 1fr; }
+}
+.usp-card {
+  background: white;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.usp-card:hover {
+  box-shadow: 0 12px 40px -10px rgba(35,38,31,0.1);
+  transform: translateY(-2px);
+}
+.usp-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  margin-bottom: 18px;
+}
+.usp-card:nth-child(1) .usp-icon { background: rgba(95,138,82,0.12); }
+.usp-card:nth-child(2) .usp-icon { background: rgba(194,121,58,0.1); }
+.usp-card:nth-child(3) .usp-icon { background: rgba(63,114,143,0.1); }
+.usp-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 8px;
+}
+.usp-desc {
+  font-size: 13.5px;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+/* ─── TESTIMONI SECTION ─── */
+.testi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  .testi-grid { grid-template-columns: 1fr; }
+}
+.testi-card {
+  background: white;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+}
+.testi-quote-mark {
+  font-family: var(--font-serif);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--color-primary);
+  opacity: 0.25;
+  margin-bottom: -8px;
+  display: block;
+}
+.testi-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--color-ink);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.testi-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-hairline);
+}
+.testi-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--color-surface-card);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.testi-name { font-size: 13px; font-weight: 600; color: var(--color-ink); }
+.testi-context { font-size: 12px; color: var(--color-muted); }
+.testi-disclaimer {
+  font-size: 12px;
+  color: var(--color-muted-soft);
+  text-align: center;
+  padding: 12px 0 0;
+  font-style: italic;
+}
+
+/* ─── KOMUNITAS SECTION ─── */
+.komunitas-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+.kom-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .kom-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 480px) {
+  .kom-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.kom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.kom-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--color-surface-card);
+  border: 2px solid var(--color-hairline);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  font-size: 22px;
+}
+.kom-item:hover .kom-avatar {
+  transform: scale(1.08);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 16px rgba(194,121,58,0.2);
+}
+.kom-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-align: center;
+  line-height: 1.3;
+}
+.komunitas-note {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+.komunitas-note strong { color: var(--color-ink); }
+
+/* ─── MLUP CONTEXT STRIP ─── */
+.mlup-strip {
+  background: var(--color-ink);
+  padding: 56px 0;
+  position: relative;
+  overflow: hidden;
+}
+.mlup-strip-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, currentColor 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(-45deg, currentColor 0 1px, transparent 1px 32px);
+  color: rgba(242,244,236,0.03);
+  pointer-events: none;
+}
+.mlup-strip-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .mlup-strip-inner { grid-template-columns: 1fr; gap: 32px; }
+}
+.mlup-strip-left {}
+.mlup-strip-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent-amber);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mlup-strip-label::before {
+  content: '';
+  width: 16px; height: 1px;
+  background: var(--color-accent-amber);
+}
+.mlup-strip-visi {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(18px, 2.5vw, 24px);
+  color: var(--color-on-dark);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+.mlup-strip-visi em { font-style: italic; color: rgba(209,161,58,0.9); }
+.mlup-strip-origin {
+  font-size: 13.5px;
+  color: var(--color-on-dark-soft);
+  line-height: 1.7;
+  max-width: 380px;
+}
+.mlup-strip-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(209,161,58,0.75);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.mlup-strip-link:hover { color: var(--color-accent-amber); }
+.mlup-strip-right {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mlup-pilar-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(170,181,160,0.5);
+  margin-bottom: 12px;
+}
+.mlup-pilar-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.mlup-pilar-item:last-child { border-bottom: none; }
+.mlup-pilar-num {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: rgba(170,181,160,0.4);
+  min-width: 20px;
+  padding-top: 1px;
+}
+.mlup-pilar-text {
+  font-size: 13.5px;
+  color: var(--color-on-dark-soft);
+  line-height: 1.55;
+}
+.mlup-pilar-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(242,244,236,0.75);
+  margin-bottom: 2px;
+}
+
+/* ─── BEASISWA CALLOUT ─── */
+.beasiswa-callout {
+  margin-top: 28px;
+  background: var(--color-surface-dark);
+  border-radius: var(--radius-xl);
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 640px) {
+  .beasiswa-callout { grid-template-columns: 1fr; gap: 16px; }
+}
+.beasiswa-callout-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: rgba(209,161,58,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.beasiswa-callout-title {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--color-on-dark);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.beasiswa-callout-title em { font-style: italic; color: var(--color-accent-amber); }
+.beasiswa-callout-desc {
+  font-size: 13.5px;
+  color: var(--color-on-dark-soft);
+  line-height: 1.7;
+}
+.beasiswa-callout-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent-amber);
+  background: rgba(209,161,58,0.1);
+  border: 1px solid rgba(209,161,58,0.2);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+.beasiswa-callout-blob {
+  position: absolute;
+  right: -40px; bottom: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(209,161,58,0.05);
+  filter: blur(40px);
+  pointer-events: none;
+}
+.masalah-keuangan-note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--color-muted-soft);
+  font-style: italic;
+  padding-left: 18px;
+}
+
+/* ─── MASALAH KEUANGAN TAG ─── */
+.masalah-list li.keuangan-item {
+  background: rgba(209,161,58,0.04);
+  border-radius: 6px;
+  margin: 2px 0;
+  padding-left: 18px;
+}
+
+/* ─── CTA FINAL ─── */
+.cta-section {
+  background: var(--color-surface-dark);
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+.cta-blob-1 {
+  position: absolute;
+  left: -5%; top: -20%;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: rgba(194,121,58,0.1);
+  filter: blur(80px);
+  pointer-events: none;
+}
+.cta-blob-2 {
+  position: absolute;
+  right: -5%; bottom: -20%;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: rgba(95,138,82,0.08);
+  filter: blur(80px);
+  pointer-events: none;
+}
+.cta-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.cta-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(209,161,58,0.85);
+  margin-bottom: 24px;
+}
+.cta-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(32px, 5vw, 52px);
+  color: var(--color-on-dark);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.cta-title em { font-style: italic; color: var(--color-primary); }
+.cta-desc {
+  font-size: 16px;
+  color: var(--color-on-dark-soft);
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.cta-privacy {
+  margin-top: 28px;
+  font-size: 12px;
+  color: rgba(170,181,160,0.6);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  background: var(--color-ink);
+  padding: 40px 0;
+}
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.footer-brand {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: rgba(242,244,236,0.6);
+}
+.footer-brand em { font-style: italic; color: var(--color-primary); }
+.footer-back {
+  font-size: 13px;
+  color: rgba(170,181,160,0.6);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+.footer-back:hover { color: var(--color-on-dark); }
+.footer-note {
+  font-size: 12px;
+  color: rgba(170,181,160,0.35);
+  text-align: center;
+  width: 100%;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 16px;
+}
+
+/* ─── DIVIDER ─── */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-hairline);
+}
+
+/* ─── REVEAL ANIMATION ─── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.75s cubic-bezier(.16,1,.3,1), transform 0.75s cubic-bezier(.16,1,.3,1);
+}
+[data-reveal].visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-reveal-delay="1"] { transition-delay: 80ms; }
+[data-reveal-delay="2"] { transition-delay: 160ms; }
+[data-reveal-delay="3"] { transition-delay: 240ms; }
+[data-reveal-delay="4"] { transition-delay: 320ms; }
+
+/* ─── MOBILE ─── */
+@media (max-width: 768px) {
+  .navbar-links, .navbar-cta-wrap { display: none; }
+  .navbar-mobile-btn { display: flex; }
+  .hero { padding: 72px 0 64px; }
+  .section { padding: 64px 0; }
+  .alur-grid { grid-template-columns: 1fr; }
+  
+  /* Dropdown styles for mobile links when active */
+  .navbar-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 68px;
+    left: 0;
+    right: 0;
+    background: rgba(248, 248, 244, 0.98);
+    border-bottom: 1px solid var(--color-hairline);
+    padding: 20px;
+    gap: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+  }
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes float {
+  0%, 100% { transform: translate(0) scale(1); }
+  50% { transform: translate(2%, -6%) scale(1.05); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ─── PATTERN ─── */
+.pattern-lattice {
+  background-image:
+    repeating-linear-gradient(45deg, currentColor 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(-45deg, currentColor 0 1px, transparent 1px 32px);
+}
+
+/* ─── SECTION LABEL PILL ─── */
+.section-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: rgba(194,121,58,0.1);
+  border: 1px solid rgba(194,121,58,0.2);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 16px;
+}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- ══════════ NAVBAR ══════════ -->
+<header class="navbar">
+  <div class="container-app navbar-inner">
+    <a href="{{ route('landing.index') }}" class="navbar-brand">
+      <span class="navbar-brand-badge">M</span>
+      <span class="navbar-brand-text">MLUP <em>Academy</em></span>
+    </a>
+
+    <ul class="navbar-links">
+      <li><a href="#masalah">Yang Dicover</a></li>
+      <li><a href="#fasilitator">Fasilitator</a></li>
+      <li><a href="#alur">Cara Kerja</a></li>
+      <li><a href="#cerita">Cerita</a></li>
+    </ul>
+
+    <div class="navbar-cta-wrap">
+      <a href="#hubungi" class="navbar-cta">Hubungi Sekarang</a>
     </div>
 
-    {{-- ============ LATAR BELAKANG ============ --}}
-    <section class="relative overflow-hidden py-28 sm:py-36">
-        <x-leaf
-            class="pointer-events-none absolute -right-6 top-16 hidden h-64 w-64 rotate-[18deg] text-ink/[0.04] lg:block" />
+    <button class="navbar-mobile-btn" aria-label="Menu">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </div>
+</header>
 
-        <div class="container-app relative">
-            <div class="max-w-3xl" data-reveal>
-                <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">Latar Belakang</span>
-                <p class="mt-6 font-serif text-3xl leading-snug tracking-tight text-ink text-balance sm:text-5xl">
-                    Lahir dari keresahan terhadap kondisi dunia akademik muslim Indonesia — biaya yang terus naik, mentoring
-                    yang belum merata, dan paradigma lama yang memisahkan keunggulan akademik dari kekuatan iman.
-                </p>
-            </div>
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <!-- Dynamic Hero Background Image/Video -->
+  @if ($hero_type === 'video' && $heroVideoExists)
+      <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+          @if ($hero_video && is_file(public_path('videos/' . $hero_video)))
+              <source src="{{ asset('videos/' . $hero_video) }}" type="video/mp4">
+          @else
+              <source src="{{ asset('videos/hero.mp4') }}" type="video/mp4">
+          @endif
+      </video>
+      <div style="position: absolute; inset: 0; background: rgba(32, 41, 31, 0.65); z-index: 2;"></div>
+  @elseif ($hero_type === 'image' && $hero_image && is_file(public_path('images/hero/' . $hero_image)))
+      <img src="{{ asset('images/hero/' . $hero_image) }}" alt="Hero Background" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+      <div style="position: absolute; inset: 0; background: rgba(32, 41, 31, 0.65); z-index: 2;"></div>
+  @endif
 
-            <div class="mt-20 divide-y divide-hairline border-t border-hairline">
-                @foreach ($problems as $index => $problem)
-                    <div class="grid gap-4 py-10 sm:grid-cols-12 sm:items-baseline sm:gap-8" data-reveal
-                        data-reveal-delay="{{ min($index + 1, 5) }}">
-                        <span class="font-serif text-4xl text-primary sm:col-span-2">0{{ $index + 1 }}</span>
-                        <h3 class="text-2xl font-medium text-ink sm:col-span-4">{{ $problem['title'] }}</h3>
-                        <p class="text-lg leading-relaxed text-body sm:col-span-6">{{ $problem['description'] }}</p>
-                    </div>
-                @endforeach
-            </div>
+  <div class="hero-blob-1" style="z-index: 2;"></div>
+  <div class="hero-blob-2" style="z-index: 2;"></div>
+
+  <div class="container-app" style="position: relative; z-index: 3;">
+    <div data-reveal>
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Program MLUP Academy · Aktif
+      </div>
+
+      <h1>
+        @if($hero_title && $hero_title !== 'Unggul dalam Ilmu.')
+          @php
+              $parts = explode('.', $hero_title, 2);
+          @endphp
+          @if (count($parts) > 1 && filled(trim($parts[1])))
+              {{ trim($parts[0]) }}.<br><span style="font-style: italic; color: var(--color-primary);">{{ trim($parts[1]) }}</span>
+          @else
+              {!! nl2br(e($hero_title)) !!}
+          @endif
+        @else
+          Kuliah lagi<br>terasa <em>berat?</em>
+        @endif
+      </h1>
+
+      <p class="hero-bigidea">"Kuliah bukan perjalanan yang harus kamu tempuh sendiri."</p>
+
+      <p class="hero-desc">
+        @if($hero_subtitle && !str_contains($hero_subtitle, 'Satu ruang belajar bagi pelajar'))
+          {{ $hero_subtitle }}
+        @else
+          Hotline Akademik MLUP menyediakan pendampingan akademik dan non-akademik untuk mahasiswa — dijalankan oleh kakak mentor per kampus dan fasilitator berpengalaman, tanpa biaya.
+        @endif
+      </p>
+
+      <div class="hero-actions">
+        <a href="#hubungi" class="btn-primary">
+          Hubungi Sekarang
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#masalah" class="btn-ghost">Pelajari Dulu</a>
+      </div>
+    </div>
+
+    <div class="hero-stat-row" data-reveal data-reveal-delay="2">
+      <div class="hero-stat">
+        <span class="hero-stat-label">Jangkauan</span>
+        <span class="hero-stat-val">7 komunitas partner aktif</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-label">Hambatan yang dicover</span>
+        <span class="hero-stat-val">Akademik & non-akademik</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-label">Privasi</span>
+        <span class="hero-stat-val">Terjaga, tanpa pengecualian</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-label">Hubungi lewat</span>
+        <span class="hero-stat-val">WhatsApp atau DM Instagram</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ MLUP CONTEXT STRIP ══════════ -->
+<section class="mlup-strip">
+  <div class="mlup-strip-pattern"></div>
+  <div class="container-app">
+    <div class="mlup-strip-inner">
+
+      <div class="mlup-strip-left" data-reveal>
+        <div class="mlup-strip-label">Siapa MLUP Academy</div>
+        <p class="mlup-strip-visi">
+          Membangun generasi muslim Indonesia yang menjadi <em>rujukan dalam keilmuan</em> dan teladan dalam keislaman.
+        </p>
+        <p class="mlup-strip-origin">
+          Lahir dari keresahan: biaya pendidikan yang terus naik, mentoring yang belum merata, dan anggapan lama bahwa akademik dan keislaman adalah dua jalan yang berbeda. Hotline Akademik adalah salah satu cara kami menjawab keresahan itu secara nyata.
+        </p>
+        <a href="https://mlup.konekin.space/" target="_blank" class="mlup-strip-link">
+          Kenali MLUP Academy lebih jauh
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+
+      <div class="mlup-strip-right" data-reveal data-reveal-delay="1">
+        <div class="mlup-pilar-label">Empat Pilar yang Menopang Arah Kami</div>
+        <div class="mlup-pilar-item">
+          <span class="mlup-pilar-num">01</span>
+          <div class="mlup-pilar-text">
+            <strong>Merobohkan Sekat Keilmuan dan Keislaman</strong>
+            Menolak anggapan bahwa serius belajar berarti longgar beragama — atau sebaliknya.
+          </div>
+        </div>
+        <div class="mlup-pilar-item">
+          <span class="mlup-pilar-num">02</span>
+          <div class="mlup-pilar-text">
+            <strong>Mencetak Rujukan, Bukan Sekadar Lulusan</strong>
+            Sosok yang menjadi tempat bertanya, teladan, dan bermanfaat bagi masyarakat.
+          </div>
+        </div>
+        <div class="mlup-pilar-item">
+          <span class="mlup-pilar-num">03</span>
+          <div class="mlup-pilar-text">
+            <strong>Menghapus Alasan "Tidak Mampu"</strong>
+            Biaya, akses, dan kondisi ekonomi tidak lagi menjadi alasan seseorang berhenti belajar.
+          </div>
+        </div>
+        <div class="mlup-pilar-item">
+          <span class="mlup-pilar-num">04</span>
+          <div class="mlup-pilar-text">
+            <strong>Merawat Ekosistem</strong>
+            Jaringan, komunitas, dan budaya saling membantu lintas kampus dan kota.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 01 MASALAH ══════════ -->
+<section class="section" id="masalah">
+  <div class="container-app">
+    <div data-reveal>
+      <div class="section-eyebrow">01 — Yang Dicover</div>
+      <h2 class="section-title">Apapun yang terasa berat,<br>bisa kamu bawa ke sini</h2>
+      <p class="section-lead">Hotline Akademik mencakup hambatan akademik dan non-akademik — termasuk tekanan psikis and masalah keuangan yang berdampak pada keberlangsungan studi.</p>
+    </div>
+
+    <div class="masalah-intro">
+      <div class="masalah-card akademik" data-reveal data-reveal-delay="1">
+        <div class="masalah-head">
+          <div class="masalah-icon">📚</div>
+          <div>
+            <div class="masalah-card-title">Hambatan Akademik</div>
+            <div class="masalah-card-sub">Yang menghambat proses belajar & kelulusan</div>
+          </div>
+        </div>
+        <ul class="masalah-list">
+          <li>Skripsi mandek — tidak tahu harus mulai dari mana</li>
+          <li>IPK rendah, takut tidak bisa lulus tepat waktu</li>
+          <li>Banyak mata kuliah yang tidak lulus atau harus diulang</li>
+          <li>Tidak paham materi tapi malu bertanya di kelas</li>
+          <li>Proses bimbingan dosen yang tidak berjalan baik</li>
+          <li>Tidak tahu cara menyusun strategi semester</li>
+        </ul>
+      </div>
+
+      <div class="masalah-card psikis" data-reveal data-reveal-delay="2">
+        <div class="masalah-head">
+          <div class="masalah-icon">🧠</div>
+          <div>
+            <div class="masalah-card-title">Hambatan Non-Akademik</div>
+            <div class="masalah-card-sub">Yang tidak kelihatan tapi sama beratnya</div>
+          </div>
+        </div>
+        <ul class="masalah-list">
+          <li>Tekanan psikis yang membuat tidak semangat kuliah</li>
+          <li>Burnout, merasa buntu, tidak tahu harus ngomong ke siapa</li>
+          <li class="keuangan-item">Kesulitan membayar UKT — takut harus berhenti kuliah</li>
+          <li class="keuangan-item">Biaya kost, makan, dan kebutuhan harian yang mulai tidak terpenuhi</li>
+          <li>Lingkungan atau kondisi hidup yang tidak mendukung</li>
+          <li>Merasa sendirian menghadapi beratnya kuliah</li>
+          <li>Kehilangan arah — tidak tahu kenapa masih kuliah</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- BEASISWA CALLOUT -->
+    <div class="beasiswa-callout" data-reveal data-reveal-delay="3">
+      <div class="beasiswa-callout-blob"></div>
+      <div class="beasiswa-callout-icon">🎓</div>
+      <div>
+        <div class="beasiswa-callout-title">Ini bagian dari <em>Beasiswa Akademik MLUP.</em></div>
+        <p class="beasiswa-callout-desc">
+          Beasiswa Akademik MLUP hadir dalam dua bentuk. Pertama, bantuan pendampingan langsung — seluruh layanan Hotline Akademik tidak dipungut biaya, mulai dari pendampingan skripsi, psikis, hingga konsultasi keuangan. Kedua, bantuan nominal — kami mengupayakan bantuan biaya UKT, akomodasi, dan biaya hidup bagi mahasiswa yang membutuhkan; termasuk cita-cita jangka panjang kami untuk menyediakan rumah singgah bagi mahasiswa perantau yang tidak mampu. Penerima manfaat yang mendapat bantuan nominal diajak untuk terlibat dalam proyek sosial bersama MLUP — karena kami percaya kebermanfaatan itu bisa diteruskan.
+        </p>
+        <span class="beasiswa-callout-badge">
+          <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Pendampingan tanpa biaya · Bantuan nominal tersedia
+        </span>
+      </div>
+    </div>
+
+    <p class="masalah-note" data-reveal data-reveal-delay="4">
+      Tidak yakin masalahmu masuk kategori mana? Tidak apa-apa. Ceritakan saja — kakak mentormu yang akan bantu petakan.
+    </p>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════ 02 FASILITATOR ══════════ -->
+<section class="section section-soft" id="fasilitator">
+  <div class="container-app">
+    <div data-reveal>
+      <div class="section-eyebrow">02 — Dua Lapis Fasilitator</div>
+      <h2 class="section-title">Dua lapis pendampingan,<br><em>satu alur yang jelas.</em></h2>
+      <p class="section-lead">Hotline Akademik dijalankan oleh dua lapis fasilitator dengan peran berbeda — kakak mentor per kampus sebagai titik kontak pertama, dan fasilitator berpengalaman sebagai penanganan lanjutan.</p>
+    </div>
+
+    <div class="fas-grid">
+      <!-- Layer 2 dulu: yang paling relatable -->
+      <div class="fas-card layer-2" data-reveal data-reveal-delay="1">
+        <div class="fas-card-blob"></div>
+        <div class="fas-card-layer-label">Lapisan 2 — Titik Kontak Pertama</div>
+        <div class="fas-card-title">Kakak mentor<br>dari kampusmu sendiri</div>
+        <div class="fas-card-desc">
+          Alumni S1 atau mahasiswa berprestasi aktif dari kampus yang sama — yang tahu persis sistem, budaya, dan medan akademik di sana. Untuk mahasiswa tingkat akhir, mentornya adalah alumni S1 kampus tersebut. Untuk mahasiswa baru, bisa alumni atau mahasiswa aktif yang perjalanan akademiknya lancar dan terbukti. Mereka yang pertama kali kamu hubungi, dan yang membantu memetakan situasimu sebelum masuk ke penanganan lanjutan.
+        </div>
+        <span class="fas-card-tag">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Alumni & mahasiswa aktif per kampus
+        </span>
+      </div>
+
+      <!-- Layer 1: para ahli -->
+      <div class="fas-card layer-1" data-reveal data-reveal-delay="2">
+        <div class="fas-card-blob"></div>
+        <div class="fas-card-layer-label">Lapisan 1 — Penanganan Lanjutan</div>
+        <div class="fas-card-title">Fasilitator dengan<br>latar akademik kuat</div>
+        <div class="fas-card-desc">
+          Tim fasilitator MLUP terdiri dari lulusan S1, S2, hingga doktor dan profesor — dengan latar belakang di bidang pendidikan, psikologi, dan pengembangan akademik. Mereka yang menangani kasus yang butuh keahlian lebih spesifik: strategi studi yang kompleks, pendampingan psikis lanjutan, atau situasi akademik yang perlu solusi yang lebih terstruktur.
+        </div>
+        <span class="fas-card-tag">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          S1 · S2 · Doktor · Profesor
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════ 03 ALUR ══════════ -->
+<section class="section" id="alur">
+  <div class="container-app">
+    <div data-reveal>
+      <div class="section-eyebrow">03 — Cara Kerja</div>
+      <h2 class="section-title">Tiga langkah,<br><em>satu pesan untuk memulai.</em></h2>
+      <p class="section-lead">Begini cara kerja Hotline Akademik dari kontak pertama sampai penanganan.</p>
+    </div>
+
+    <div style="position: relative;">
+      <div class="alur-grid">
+
+        <div class="alur-connector"></div>
+        <div class="alur-connector alur-connector-2"></div>
+
+        <div class="alur-step" data-reveal data-reveal-delay="1">
+          <div class="alur-step-num">1</div>
+          <div class="alur-step-title">Hubungi kakak konsultan akademik</div>
+          <div class="alur-step-desc">
+            Lewat WhatsApp atau DM Instagram <strong>@muslimlup.ac.id</strong>. Ceritakan apa yang kamu rasakan — sebisamu, semampumu. Tidak perlu terstruktur.
+          </div>
         </div>
 
-        <div class="container-app mt-24" data-reveal>
-            <div class="relative overflow-hidden rounded-2xl bg-primary px-8 py-20 text-center sm:px-20">
-                <div class="pattern-lattice absolute inset-0 text-on-primary/10"></div>
-                <x-icon name="quote" class="relative mx-auto h-12 w-12 text-on-primary/40" />
-                <p
-                    class="relative mx-auto mt-8 max-w-3xl font-serif text-3xl italic leading-snug text-on-primary text-balance sm:text-5xl">
-                    Akademik dan keislaman dapat tumbuh bersama, dalam satu ekosistem yang sama.
-                </p>
-                <div class="relative mx-auto mt-8 flex items-center justify-center gap-3">
-                    <span class="h-px w-10 bg-on-primary/40"></span>
-                    <p class="text-sm font-medium uppercase tracking-[0.15em] text-on-primary/80">Keyakinan Dasar MLUP
-                        Academy</p>
-                    <span class="h-px w-10 bg-on-primary/40"></span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ============ SIAPA KAMI — alternating image/text rows ============ --}}
-    <section id="tentang" class="scroll-mt-20 bg-surface-soft py-28 sm:py-36">
-        <div class="container-app">
-            <div class="max-w-2xl" data-reveal>
-                <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">Siapa Kami</span>
-                <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                    Bukan lembaga formal — ruang belajar yang inklusif
-                </h2>
-                <p class="mt-6 text-xl leading-relaxed text-body">
-                    Mempertemukan pelajar, mahasiswa, dan pejuang akademik muslim tanpa membedakan latar belakang maupun
-                    kemampuan ekonomi. Untuk pelajar, mahasiswa, Gen-Z, profesional muda, hingga donatur.
-                </p>
-            </div>
-
-            <div class="mt-24 space-y-24">
-                @foreach ($approaches as $index => $approach)
-                    <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16 {{ $index % 2 === 1 ? 'lg:[&>*:first-child]:order-2' : '' }}"
-                        data-reveal>
-                        <x-photo-frame :item="$approachPhotos[$index]" class="aspect-[4/3] rounded-lg" />
-                        <div>
-                            <span class="font-serif text-lg text-muted">{{ $approach['label'] }}</span>
-                            <h3 class="mt-3 font-serif text-4xl text-ink sm:text-5xl">{{ $approach['title'] }}</h3>
-                            <p class="mt-5 max-w-lg text-lg leading-relaxed text-body">{{ $approach['description'] }}</p>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- ============ VISI (statement band) ============ --}}
-    <section id="visi-misi" class="relative scroll-mt-20 overflow-hidden bg-surface-dark py-28 text-on-dark sm:py-40">
-        <x-leaf
-            class="pointer-events-none absolute -left-10 top-10 hidden h-56 w-56 -rotate-[24deg] text-on-dark/[0.06] xl:block" />
-        <x-leaf
-            class="pointer-events-none absolute -right-8 bottom-10 hidden h-72 w-72 rotate-[32deg] text-on-dark/[0.06] xl:block" />
-
-        <div class="container-app relative text-center">
-            <span class="text-sm font-medium uppercase tracking-[0.15em] text-accent-amber" data-reveal>Visi</span>
-            <p class="mx-auto mt-8 max-w-4xl font-serif text-4xl leading-tight tracking-tight text-balance sm:text-6xl"
-                data-reveal data-reveal-delay="1">
-                Membangun generasi muslim Indonesia yang menjadi <span class="italic text-primary">rujukan dalam
-                    keilmuan</span>
-                dan <span class="italic text-primary">teladan dalam keislaman</span>.
-            </p>
-            <p class="mx-auto mt-8 max-w-xl text-xl text-on-dark-soft" data-reveal data-reveal-delay="2">
-                Melalui ruang belajar yang terbuka bagi siapa pun, tanpa diskriminasi.
-            </p>
+        <div class="alur-step" data-reveal data-reveal-delay="2">
+          <div class="alur-step-num">2</div>
+          <div class="alur-step-title">Disambungkan ke kakak mentor</div>
+          <div class="alur-step-desc">
+            Yang kenal kampusmu. Mulai cerita dari sana — tidak perlu rapi, tidak perlu lengkap. Kakak mentor yang akan bantu memetakan situasimu.
+          </div>
         </div>
 
-        {{-- Paradigma lama vs baru — interactive tabs --}}
-        <div class="container-app mt-20" x-data="tabSwitcher(0)" data-reveal data-reveal-delay="3">
-            <div class="flex flex-wrap justify-center gap-3">
-                @foreach ($paradigms as $index => $paradigm)
-                    <button @click="active = {{ $index }}"
-                        :class="isActive({{ $index }}) ? 'bg-primary text-on-primary' : 'bg-surface-dark-elevated text-on-dark-soft hover:text-on-dark'"
-                        class="rounded-pill px-6 py-3 text-base font-medium transition">
-                        {{ $paradigm['topic'] }}
-                    </button>
-                @endforeach
-            </div>
-
-            <div class="relative mx-auto mt-14 max-w-3xl">
-                @foreach ($paradigms as $index => $paradigm)
-                    <div x-show="isActive({{ $index }})" x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 scale-[0.97] translate-y-3"
-                        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                        x-transition:leave-end="opacity-0 scale-[0.97] -translate-y-2" x-cloak
-                        class="relative overflow-hidden rounded-lg border-2 border-primary/40 bg-surface-dark-elevated">
-                        <div class="pattern-lattice absolute inset-0 text-on-dark/[0.04]"></div>
-
-                        <div class="relative flex items-center gap-3 border-b border-white/10 px-8 py-4 sm:px-10">
-                            <span
-                                class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-medium text-on-primary">{{ $index + 1 }}</span>
-                            <p class="text-sm font-medium text-on-dark">{{ $paradigm['topic'] }}</p>
-                        </div>
-
-                        <div class="relative grid gap-8 p-8 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-white/10 sm:p-10">
-                            <div class="sm:pr-9">
-                                <div class="flex items-center gap-3">
-                                    <span
-                                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-error/15 text-error">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </span>
-                                    <p class="text-xs font-medium uppercase tracking-[0.1em] text-on-dark-soft/70">Paradigma
-                                        Lama</p>
-                                </div>
-                                <p class="mt-5 text-lg leading-relaxed text-on-dark-soft line-through decoration-error/60">
-                                    {{ $paradigm['old'] }}</p>
-                            </div>
-
-                            <div class="sm:pl-9">
-                                <div class="flex items-center gap-3">
-                                    <span
-                                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </span>
-                                    <p class="text-xs font-medium uppercase tracking-[0.1em] text-primary">Paradigma Baru</p>
-                                </div>
-                                <p class="mt-5 text-lg leading-relaxed text-on-dark">{{ $paradigm['new'] }}</p>
-                            </div>
-                        </div>
-
-                        <span
-                            class="absolute left-1/2 top-1/2 z-10 hidden h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-on-primary shadow-lg sm:flex">
-                            <x-icon name="arrow-right" class="h-5 w-5" />
-                        </span>
-                    </div>
-                @endforeach
-            </div>
+        <div class="alur-step" data-reveal data-reveal-delay="3">
+          <div class="alur-step-num">3</div>
+          <div class="alur-step-title">Ditangani bersama</div>
+          <div class="alur-step-desc">
+            Oleh kakak mentor dan fasilitator berpengalaman, sesuai kebutuhanmu. Satu langkah konkret dalam satu waktu.
+          </div>
         </div>
-    </section>
+      </div>
 
-    {{-- ============ PILAR VISI — editorial list ============ --}}
-    <section class="py-28 sm:py-36">
-        <div class="container-app">
-            <div class="max-w-2xl" data-reveal>
-                <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">Pilar Visi</span>
-                <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                    Empat pilar yang menopang arah kami
-                </h2>
-            </div>
+      <div class="alur-note" data-reveal data-reveal-delay="4">
+        <strong>Privasi terjaga.</strong> Apa yang kamu ceritakan tidak akan berpindah tangan tanpa seizinmu.
+      </div>
+    </div>
+  </div>
+</section>
 
-            <div class="mt-16 divide-y divide-hairline border-t border-hairline">
-                @foreach ($pillars as $index => $pillar)
-                    <div class="grid gap-4 py-12 sm:grid-cols-12 sm:items-center sm:gap-8" data-reveal
-                        data-reveal-delay="{{ min($index + 1, 5) }}">
-                        <span class="font-serif text-5xl text-primary/70 sm:col-span-2">{{ $index + 1 }}</span>
-                        <h3 class="text-2xl font-medium leading-snug text-ink sm:col-span-4">{{ $pillar['title'] }}</h3>
-                        <p class="text-lg leading-relaxed text-body sm:col-span-6">{{ $pillar['description'] }}</p>
-                    </div>
-                @endforeach
-            </div>
+<div class="section-divider"></div>
+
+<!-- ══════════ 04 USP ══════════ -->
+<section class="section section-soft">
+  <div class="container-app">
+    <div data-reveal>
+      <div class="section-eyebrow">04 — Kenapa Hotline Akademik</div>
+      <h2 class="section-title">Berbeda dari jalur<br>formal kampus.</h2>
+      <p class="section-lead">Jalur formal punya tempatnya. Hotline Akademik hadir untuk yang tidak tercover di sana.</p>
+    </div>
+
+    <div class="usp-grid">
+      <div class="usp-card" data-reveal data-reveal-delay="1">
+        <div class="usp-icon">🔒</div>
+        <div class="usp-title">Privasi terjaga</div>
+        <div class="usp-desc">
+          Apa yang kamu ceritakan tidak berpindah tangan tanpa seizinmu. Berlaku untuk semua informasi, dari awal kontak sampai proses pendampingan.
         </div>
-    </section>
+      </div>
 
-    {{-- ============ COLLAGE — decorative photo breather ============ --}}
-    <section class="overflow-hidden py-24 sm:py-32">
-        <div class="container-app">
-            <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-10" data-reveal>
-                <x-photo-frame :item="$decor[0]" class="aspect-[3/4] w-36 rotate-[-4deg] rounded-lg shadow-xl sm:w-48" />
-                <x-photo-frame :item="$decor[1]"
-                    class="aspect-[3/4] w-44 rotate-[3deg] rounded-lg shadow-2xl sm:w-60 sm:-translate-y-5" />
-                <x-photo-frame :item="$decor[2]" class="aspect-[3/4] w-36 rotate-[-2deg] rounded-lg shadow-xl sm:w-48" />
-            </div>
+      <div class="usp-card" data-reveal data-reveal-delay="2">
+        <div class="usp-icon">🤝</div>
+        <div class="usp-title">Pendampingan, bukan penilaian</div>
+        <div class="usp-desc">
+          Kakak mentor dan fasilitator di sini untuk membantu memetakan dan menyelesaikan masalahmu — bukan mengevaluasi sejauh mana kamu sudah berusaha.
         </div>
-    </section>
+      </div>
 
-    {{-- ============ MISI (accordion) ============ --}}
-    <section class="bg-surface-soft py-28 sm:py-36">
-        <div class="container-app grid gap-14 lg:grid-cols-12">
-            <div class="lg:col-span-4" data-reveal>
-                <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">Misi</span>
-                <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-5xl">
-                    Empat misi yang kami jalankan
-                </h2>
-                <p class="mt-6 text-lg leading-relaxed text-body">Klik setiap misi untuk melihat langkah implementasinya.
-                </p>
-            </div>
-
-            <div class="lg:col-span-8" x-data="accordionGroup(0)" data-reveal data-reveal-delay="1">
-                @foreach ($missions as $index => $mission)
-                    <div class="border-b border-hairline py-7 first:pt-0">
-                        <button @click="toggle({{ $index }})" class="flex w-full items-center justify-between gap-6 text-left">
-                            <span class="flex items-baseline gap-5">
-                                <span class="font-serif text-base text-muted">0{{ $index + 1 }}</span>
-                                <span class="font-serif text-2xl text-ink sm:text-3xl">{{ $mission['title'] }}</span>
-                            </span>
-                            <span
-                                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-hairline text-ink transition"
-                                :class="isOpen({{ $index }}) && 'rotate-45 bg-primary border-primary text-on-primary'">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                            </span>
-                        </button>
-
-                        <div x-show="isOpen({{ $index }})" x-collapse x-cloak class="pl-10 pt-5">
-                            <p class="text-lg text-body">{{ $mission['summary'] }}</p>
-                            <ul class="mt-5 space-y-3">
-                                @foreach ($mission['points'] as $point)
-                                    <li class="flex items-start gap-3 text-base text-body">
-                                        <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"></span>
-                                        {{ $point }}
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+      <div class="usp-card" data-reveal data-reveal-delay="3">
+        <div class="usp-icon">🧩</div>
+        <div class="usp-title">Struktur berlapis yang serius</div>
+        <div class="usp-desc">
+          Kakak mentor yang kenal kampusmu, fasilitator berpengalaman yang tahu solusinya — dua lapisan yang bekerja bersama agar kamu tidak jatuh di celah antara "butuh teman" and "butuh ahli."
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    {{-- ============ MOMEN KEGIATAN — proof gallery ============ --}}
-    <section class="py-28 sm:py-36">
-        <div class="container-app">
-            <div class="max-w-2xl" data-reveal>
-                <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">Momen Kegiatan</span>
-                <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                    Bukan sekadar wacana — ini ruang belajarnya
-                </h2>
-            </div>
+<div class="section-divider"></div>
 
-            {{-- Formal row of large, monumental tiles --}}
-            @php
-                $galleryAccents = ['bg-primary text-on-primary', 'bg-accent-blue text-on-primary', 'bg-accent-teal text-on-primary', 'bg-error text-on-primary'];
-            @endphp
-            <div class="mt-12 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-                @foreach ($proofGallery as $index => $photo)
-                    <div class="relative" data-reveal data-reveal-delay="{{ min($index + 1, 5) }}">
-                        <span
-                            class="absolute -left-3 -top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full font-serif text-base shadow-md ring-4 ring-canvas {{ $galleryAccents[$index % count($galleryAccents)] }}">
-                            {{ sprintf('%02d', $index + 1) }}
-                        </span>
-                        <x-photo-frame :item="$photo" class="glow-card aspect-[4/5] rounded-lg shadow-2xl" />
-                    </div>
-                @endforeach
-            </div>
+<!-- ══════════ 05 CERITA ══════════ -->
+<section class="section" id="cerita">
+  <div class="container-app">
+    <div data-reveal>
+      <div class="section-eyebrow">05 — Cerita dari Peserta</div>
+      <h2 class="section-title">Bukan janji.<br><em>Ini yang sudah terjadi.</em></h2>
+      <p class="section-lead">Cerita-cerita ini ditulis ulang secara anonim atas izin yang bersangkutan. Identitas dijaga sepenuhnya.</p>
+    </div>
+
+    <div class="testi-grid">
+      <div class="testi-card" data-reveal data-reveal-delay="1">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">
+          Skripsi saya mandek hampir setahun. Bukan karena tidak mau, tapi setiap kali buka laptop rasanya mual. Saya pikir saya yang bermasalah. Ternyata ada cara untuk mulai lagi — dari yang kecil dulu, satu paragraf dalam sehari.
+        </p>
+        <div class="testi-meta">
+          <div class="testi-avatar">✦</div>
+          <div>
+            <div class="testi-name">A., Mahasiswi S1</div>
+            <div class="testi-context">Semester 9 · Hambatan penulisan skripsi</div>
+          </div>
         </div>
-    </section>
+      </div>
 
-    {{-- ============ NILAI — alternating icon/text rows ============ --}}
-    <section id="nilai" class="scroll-mt-20 bg-surface-soft py-28 sm:py-36">
-        <div class="container-app">
-            <div class="max-w-2xl" data-reveal>
-                <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">Nilai-Nilai Organisasi</span>
-                <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                    Lima nilai yang melandasi setiap keputusan
-                </h2>
-            </div>
-
-            <div class="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start" x-data="{ active: 0 }" data-reveal>
-                <div class="relative lg:sticky lg:top-28">
-                    <div class="blob motion-safe:animate-float pointer-events-none absolute inset-0 -z-10 bg-primary/20">
-                    </div>
-                    <div class="relative mx-auto flex aspect-square w-full max-w-sm items-center justify-center overflow-hidden rounded-2xl shadow-lg transition-colors duration-500 lg:mx-0"
-                        :class="{
-                            'bg-ink': active === 0,
-                            'bg-primary': active === 1,
-                            'bg-accent-teal': active === 2,
-                            'bg-accent-amber': active === 3,
-                            'bg-accent-blue': active === 4,
-                         }">
-                        <div class="pattern-lattice absolute inset-0 text-white opacity-10"></div>
-                        <span class="absolute -left-10 -top-10 h-44 w-44 rounded-full bg-white/10 blur-2xl"></span>
-                        <span class="absolute -right-12 -bottom-12 h-56 w-56 rounded-full bg-black/10 blur-2xl"></span>
-                        <span class="absolute left-7 top-7 font-serif text-sm text-white/70"
-                            x-text="'Nilai 0' + (active + 1)"></span>
-
-                        @foreach ($values as $index => $value)
-                            <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-300"
-                                x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-150"
-                                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
-                                x-cloak class="absolute">
-                                <x-icon :name="$value['icon']" class="h-28 w-28 text-white sm:h-36 sm:w-36" />
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="divide-y divide-hairline border-t border-hairline">
-                    @foreach ($values as $index => $value)
-                        <button @click="active = {{ $index }}" @mouseenter="active = {{ $index }}" type="button"
-                            class="block w-full text-left">
-                            <div class="flex items-center justify-between gap-4 rounded-lg px-5 py-5 transition-colors duration-300"
-                                :class="active === {{ $index }} ? 'bg-surface-card' : ''">
-                                <h3 class="font-serif text-xl sm:text-2xl"
-                                    :class="active === {{ $index }} ? 'text-primary' : 'text-ink'">{{ $value['title'] }}</h3>
-                                <svg class="h-5 w-5 shrink-0 text-muted transition-transform duration-300"
-                                    :class="active === {{ $index }} ? 'rotate-90 text-primary' : ''" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
-                            <div x-show="active === {{ $index }}" x-collapse x-cloak class="px-5">
-                                <p class="pb-5 pt-1 text-base leading-relaxed text-body">{{ $value['description'] }}</p>
-                            </div>
-                        </button>
-                    @endforeach
-                </div>
-            </div>
+      <div class="testi-card" data-reveal data-reveal-delay="2">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">
+          Saya tidak cerita ke siapapun karena takut dianggap lebay. Ke kakak mentor pun awalnya ragu. Tapi ternyata dia betul-betul mendengarkan — bukan langsung kasih solusi, tapi bantu saya petakan dulu apa yang sebenarnya terjadi.
+        </p>
+        <div class="testi-meta">
+          <div class="testi-avatar">◈</div>
+          <div>
+            <div class="testi-name">R., Mahasiswa S1</div>
+            <div class="testi-context">Semester 6 · Tekanan psikis & motivasi</div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
 
-    {{-- ============ INTERLUDE — chapter break before the numbered sections ============ --}}
-    <section class="relative overflow-hidden bg-gradient-to-br from-[#0c182b] via-[#1a385c] to-[#0c182b] py-28 text-on-dark sm:py-36">
-        <div class="pattern-lattice absolute inset-0 text-on-dark/[0.02]"></div>
+    <p class="testi-disclaimer" data-reveal data-reveal-delay="3">
+      * Nama dan detail disamarkan. Cerita disampaikan atas izin peserta.
+    </p>
+  </div>
+</section>
 
-        <!-- Realistic Volumetric Clouds Layer -->
-        <div class="pointer-events-none absolute inset-0 overflow-hidden select-none">
-            <!-- Ambient Golden Sunset Glow behind clouds -->
-            <div class="absolute left-[25%] top-[15%] h-80 w-[450px] rounded-full bg-accent-amber/12 blur-[80px]"></div>
-            <div class="absolute right-[20%] bottom-[10%] h-96 w-[500px] rounded-full bg-primary/8 blur-[90px]"></div>
+<div class="section-divider"></div>
 
-            <!-- Volumetric Cloud Group 1 (Top Left) -->
-            <div class="absolute -left-[10%] top-[5%] opacity-70 motion-safe:animate-cloud-drift-1">
-                <div class="relative h-44 w-[400px]">
-                    <div class="absolute h-28 w-28 rounded-full cloud-soft-white blur-[15px] left-0 top-6"></div>
-                    <div class="absolute h-40 w-40 rounded-full cloud-soft-white blur-[18px] left-20 top-0"></div>
-                    <div class="absolute h-32 w-32 rounded-full cloud-soft-blue blur-[15px] left-48 top-6"></div>
-                    <div class="absolute h-20 w-64 cloud-soft-white blur-[12px] left-10 bottom-2"></div>
-                </div>
-            </div>
-            
-            <!-- Volumetric Cloud Group 2 (Right Middle/Top) -->
-            <div class="absolute -right-[8%] top-[20%] opacity-65 motion-safe:animate-cloud-drift-2">
-                <div class="relative h-44 w-[450px]">
-                    <div class="absolute h-28 w-28 rounded-full cloud-soft-white blur-[15px] right-0 top-6"></div>
-                    <div class="absolute h-36 w-36 rounded-full cloud-soft-gold blur-[18px] right-24 top-0"></div>
-                    <div class="absolute h-32 w-32 rounded-full cloud-soft-white blur-[15px] right-52 top-6"></div>
-                    <div class="absolute h-20 w-72 cloud-soft-white blur-[12px] right-14 bottom-2"></div>
-                </div>
-            </div>
+<!-- ══════════ 06 KOMUNITAS SATELIT ══════════ -->
+<section class="section section-soft">
+  <div class="container-app">
+    <div class="komunitas-intro" data-reveal>
+      <div>
+        <div class="section-eyebrow">06 — Ekosistem</div>
+        <h2 class="section-title" style="margin-bottom: 8px;">7 komunitas partner.<br>Sudah ada di kampusmu.</h2>
+        <p style="font-size: 15px; color: var(--color-muted); max-width: 440px; line-height: 1.7;">Kakak mentor per kampus bekerja melalui jaringan komunitas ini — artinya ada yang kenal medan tempatmu belajar.</p>
+      </div>
+    </div>
 
-            <!-- Volumetric Cloud Group 3 (Bottom Left Mist) -->
-            <div class="absolute left-[15%] bottom-[-15%] opacity-60 motion-safe:animate-cloud-drift-3">
-                <div class="relative h-32 w-[350px]">
-                    <div class="absolute h-24 w-24 rounded-full cloud-soft-white blur-[12px] left-0"></div>
-                    <div class="absolute h-28 w-28 rounded-full cloud-soft-blue blur-[15px] left-16"></div>
-                    <div class="absolute h-24 w-24 rounded-full cloud-soft-white blur-[12px] left-40"></div>
-                </div>
-            </div>
-        </div>
-
-        <x-leaf
-            class="pointer-events-none absolute -left-12 top-1/2 hidden h-72 w-72 -translate-y-1/2 text-on-dark/[0.04] xl:block motion-safe:animate-leaf-sway-2" />
-        <x-leaf
-            class="pointer-events-none absolute -right-12 top-1/2 hidden h-72 w-72 -translate-y-1/2 text-on-dark/[0.04] xl:block motion-safe:animate-leaf-sway-1" />
-
-        <!-- Card Container with Glassmorphism to pop out of background -->
-        <div class="container-app relative z-10" data-reveal>
-            <div class="mx-auto max-w-4xl rounded-2xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.35)] sm:p-16 relative overflow-hidden">
-                <!-- Ambient highlight inside card -->
-                <div class="absolute -right-24 -top-24 h-48 w-48 rounded-full bg-white/5 blur-2xl"></div>
-                
-                <div class="relative z-10 text-center">
-                    <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/5 border border-white/10 shadow-inner">
-                        <x-brand-mark class="h-9 w-9 text-accent-gold" />
-                    </span>
-                    
-                    <p class="mx-auto mt-8 max-w-2xl font-serif text-3xl italic leading-relaxed text-balance text-white sm:text-4xl text-shadow-sm">
-                        "Satu nilai yang dijaga, tumbuh jadi kebiasaan. Satu kebiasaan yang dirawat, tumbuh jadi ekosistem."
-                    </p>
-                    
-                    <div class="mt-8 flex items-center justify-center gap-3">
-                        <span class="h-px w-8 bg-white/20"></span>
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent-amber">
-                            Pilar Ke-4 &middot; Merawat Ekosistem
-                        </p>
-                        <span class="h-px w-8 bg-white/20"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ============ 06 · PORTOFOLIO PROGRAM ============ --}}
-    <section id="program" class="scroll-mt-20 py-28 sm:py-36">
-        <div class="container-app">
-            @if (count($programs) > 0)
-                <div class="max-w-2xl" data-reveal>
-                    <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">06 &middot; Portofolio
-                        Program</span>
-                    <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">Yang
-                        telah kami buktikan</h2>
-                </div>
-                <div class="mt-16 grid gap-6 lg:grid-cols-3">
-                    @foreach ($programs as $program)
-                        <div
-                            class="glow-card rounded-lg border border-hairline bg-canvas p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-                            <h3 class="font-serif text-2xl text-ink">{{ $program['title'] }}</h3>
-                            <p class="mt-3 text-lg leading-relaxed text-body">{{ $program['description'] }}</p>
-                        </div>
-                    @endforeach
-                </div>
+    <div class="kom-grid" data-reveal data-reveal-delay="1">
+      @foreach ($partners as $partner)
+        <a class="kom-item" href="{{ route('landing.community.show', $partner['slug']) }}">
+          <div class="kom-avatar">
+            @if (!empty($partner['logo']['exists']))
+              <img src="{{ asset('images/partners/' . $partner['logo']['file']) }}" alt="{{ $partner['name'] }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
             @else
-                <div class="relative overflow-hidden rounded-2xl bg-surface-dark px-8 py-24 text-center text-on-dark sm:px-20"
-                    data-reveal>
-                    <div class="pattern-lattice absolute inset-0 text-on-dark/[0.05]"></div>
-                    <span
-                        class="relative rounded-pill bg-surface-dark-elevated px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] text-accent-amber">
-                        06 &middot; Portofolio Program
-                    </span>
-                    <h2
-                        class="relative mx-auto mt-8 max-w-2xl font-serif text-4xl leading-tight tracking-tight text-balance sm:text-5xl">
-                        Yang telah kami buktikan sedang kami susun jadi satu portofolio utuh
-                    </h2>
-                    <p class="relative mx-auto mt-6 max-w-xl text-xl text-on-dark-soft">
-                        Sambil menunggu, lihat <a href="#nilai"
-                            class="underline decoration-primary/60 underline-offset-4 hover:text-on-dark">bukti kegiatan
-                            kami</a> di atas — komunitas ini bukan sekadar wacana.
-                    </p>
-                    <a href="{{ route('landing.whatsapp.redirect', ['source' => 'program_teaser', 'campaign' => 'gabung_komunitas']) }}"
-                        class="relative mt-10 inline-flex h-14 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-on-primary transition hover:bg-primary-active">
-                        Dapatkan Kabar Terbaru
-                    </a>
-                </div>
+              {{ mb_substr($partner['name'], 0, 1) }}
             @endif
-        </div>
-    </section>
+          </div>
+          <span class="kom-name">{{ $partner['name'] }}</span>
+        </a>
+      @endforeach
+    </div>
 
-    {{-- ============ 07 · EKOSISTEM DAN MITRA ============ --}}
-    <section id="komunitas" class="scroll-mt-20 py-28 sm:py-36">
-        <div class="container-app">
-            <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
-                <div class="max-w-2xl">
-                    <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">07 &middot; Ekosistem dan
-                        Mitra</span>
-                    <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                        7 komunitas partner aktif
-                    </h2>
-                    <p class="mt-6 text-xl leading-relaxed text-body">
-                        Kami membuka ruang kolaborasi lintas kampus dan lintas komunitas. Klik tiap lingkaran untuk melihat
-                        profil mitra.
-                    </p>
-                </div>
-                <a href="{{ route('landing.whatsapp.redirect', ['source' => 'komunitas', 'campaign' => 'ajukan_kolaborasi']) }}"
-                    class="inline-flex h-12 shrink-0 items-center justify-center rounded-md border border-hairline px-6 text-sm font-medium text-ink transition hover:bg-surface-soft">
-                    Ajukan Kolaborasi
-                </a>
-            </div>
+    <p class="komunitas-note" data-reveal data-reveal-delay="2">
+      <strong>Komunitas kamu belum terdaftar?</strong> Tidak masalah — Hotline Akademik terbuka untuk semua mahasiswa, tanpa terkecuali.
+    </p>
+  </div>
+</section>
 
-            {{-- Orbit layout — partner logos revolve around the MLUP mark like a galaxy --}}
-            <div class="relative mx-auto mt-24 aspect-square w-full max-w-[380px] sm:max-w-[520px] lg:max-w-[620px]"
-                data-reveal>
-                <svg viewBox="0 0 100 100"
-                    class="absolute inset-0 h-full w-full text-hairline motion-safe:animate-[spin_70s_linear_infinite]">
-                    <circle cx="50" cy="50" r="41" fill="none" stroke="currentColor" stroke-width="0.4"
-                        stroke-dasharray="0.5 3" />
-                </svg>
-                <svg viewBox="0 0 100 100"
-                    class="absolute inset-0 h-full w-full text-hairline motion-safe:animate-[spin_100s_linear_infinite_reverse]">
-                    <circle cx="50" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="0.4"
-                        stroke-dasharray="0.5 4" />
-                </svg>
+<!-- ══════════ CTA FINAL ══════════ -->
+<section class="cta-section" id="hubungi">
+  <div class="cta-blob-1"></div>
+  <div class="cta-blob-2"></div>
 
-                <div
-                    class="blob motion-safe:animate-float pointer-events-none absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 bg-primary/25 sm:h-40 sm:w-40">
-                </div>
+  <div class="container-app">
+    <div class="cta-inner" data-reveal>
+      <div class="cta-eyebrow">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Mulai di sini
+      </div>
 
-                <div
-                    class="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-1 rounded-full bg-canvas p-2.5 shadow-xl sm:h-20 sm:w-20">
-                    <x-brand-mark class="h-full w-full" />
-                </div>
+      <h2 class="cta-title">Siap untuk<br><em>cerita?</em></h2>
 
-                @php
-                    $partnerCount = max(count($partners), 1);
-                @endphp
-                @foreach ($partners as $index => $partner)
-                    @php
-                        $angle = deg2rad(-90 + ($index * (360 / $partnerCount)));
-                        $orbitX = 50 + 41 * cos($angle);
-                        $orbitY = 50 + 41 * sin($angle);
-                    @endphp
-                    <a href="{{ route('landing.community.show', $partner['slug']) }}"
-                        class="group absolute flex w-16 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 sm:w-24 lg:w-28"
-                        style="left: {{ $orbitX }}%; top: {{ $orbitY }}%;" data-reveal
-                        data-reveal-delay="{{ min($index + 1, 5) }}">
-                        <div
-                            class="relative h-11 w-11 overflow-hidden rounded-full bg-surface-card shadow-md ring-4 ring-canvas transition duration-300 group-hover:scale-110 group-hover:ring-primary sm:h-16 sm:w-16 lg:h-20 lg:w-20">
-                            @if (!empty($partner['logo']['exists']))
-                                <img src="{{ asset('images/partners/' . $partner['logo']['file']) }}" alt="{{ $partner['name'] }}"
-                                    class="h-full w-full object-cover">
-                            @else
-                                <div
-                                    class="flex h-full w-full items-center justify-center font-serif text-sm text-muted sm:text-xl">
-                                    {{ mb_substr($partner['name'], 0, 1) }}
-                                </div>
-                            @endif
-                        </div>
-                        <span
-                            class="text-center text-[10px] font-medium leading-snug text-body sm:text-xs lg:text-sm">{{ $partner['name'] }}</span>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </section>
+      <p class="cta-desc">
+        Tidak perlu cerita yang terstruktur. Tidak perlu tahu dulu apa yang kamu butuhkan. Satu pesan sudah cukup untuk memulai.
+      </p>
 
-    {{-- ============ 08 · ROADMAP 1448 H ============ --}}
-    <section class="relative scroll-mt-20 overflow-hidden bg-surface-soft py-28 sm:py-36">
-        <x-leaf
-            class="pointer-events-none absolute -left-12 bottom-10 hidden h-64 w-64 -rotate-[12deg] text-ink/[0.04] xl:block" />
-        <div class="blob motion-safe:animate-float pointer-events-none absolute left-1/4 top-1/3 h-64 w-64 bg-primary/15">
-        </div>
-        <div
-            class="blob motion-safe:animate-float-slow pointer-events-none absolute right-1/4 bottom-0 h-56 w-56 bg-accent-blue/15">
-        </div>
+      <div class="cta-actions">
+        <!-- WhatsApp redirect with dynamic tracking parameters -->
+        <a href="{{ route('landing.whatsapp.redirect', ['source' => 'cta_final', 'campaign' => 'gabung_komunitas']) }}" target="_blank" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.558 4.121 1.532 5.849L.057 23.428a.5.5 0 00.614.614l5.579-1.475A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.807 9.807 0 01-5.032-1.388l-.36-.214-3.733.987.988-3.647-.235-.374A9.808 9.808 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+          Chat Kakak Konsultan
+        </a>
+        <a href="https://instagram.com/muslimlup.ac.id" target="_blank" class="btn-ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          DM @muslimlup.ac.id
+        </a>
+      </div>
 
-        <div class="container-app relative">
-            <div class="max-w-2xl" data-reveal>
-                <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">08 &middot; Roadmap 1448 H</span>
-                <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                    Beasiswa MLUP dan LINTAS
-                </h2>
-                <p class="mt-6 text-xl leading-relaxed text-body">Klik tiap titik untuk melihat detailnya.</p>
-            </div>
+      <div class="cta-privacy">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Privasi terjaga. Tidak ada informasimu yang berpindah tangan tanpa seizinmu.
+      </div>
+    </div>
+  </div>
+</section>
 
-            @php
-                $roadmapAccents = [
-                    ['bg' => 'bg-primary', 'tint' => 'bg-primary/15', 'text' => 'text-primary'],
-                    ['bg' => 'bg-accent-blue', 'tint' => 'bg-accent-blue/15', 'text' => 'text-accent-blue'],
-                ];
-            @endphp
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="footer">
+  <div class="container-app">
+    <div class="footer-inner">
+      <span class="footer-brand">MLUP <em>Academy</em> — Hotline Akademik</span>
+      
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center;">
+        <a href="{{ route('articles.index') }}" class="footer-back" style="color: rgba(170,181,160,0.6); text-decoration: none; font-size: 13.5px; transition: color 0.15s;">Artikel</a>
+        @auth
+          <a href="{{ route('hotline.dashboard') }}" class="footer-back" style="color: rgba(170,181,160,0.6); text-decoration: none; font-size: 13.5px; transition: color 0.15s;">Dashboard Admin</a>
+        @else
+          <a href="{{ route('admin.login') }}" class="footer-back" style="color: rgba(170,181,160,0.6); text-decoration: none; font-size: 13.5px; transition: color 0.15s;">Login Admin</a>
+        @endauth
+        <a href="https://mlup.konekin.space/" class="footer-back">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Kembali ke MLUP Academy
+        </a>
+      </div>
+    </div>
+    <p class="footer-note">
+      © {{ date('Y') }} · MLUP Academy · Bandung, Jawa Barat, Indonesia — Komunitas pendidikan muslim Indonesia.
+    </p>
+  </div>
+</footer>
 
-            <div class="relative mt-24" x-data="accordionGroup(0)" data-reveal>
-                <svg viewBox="0 0 1000 200" preserveAspectRatio="none"
-                    class="pointer-events-none absolute inset-x-0 top-[42px] hidden h-32 w-full text-primary/40 sm:block">
-                    <path d="M 80 40 Q 280 -30, 500 90 T 920 40" fill="none" stroke="currentColor" stroke-width="3.5"
-                        stroke-dasharray="0.5 12" stroke-linecap="round" />
-                </svg>
+<script>
+// ── Scroll Progress ──
+const progressBar = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = max > 0 ? window.scrollY / max : 0;
+  progressBar.style.transform = `scaleX(${pct})`;
+}, { passive: true });
 
-                <div class="relative grid gap-12 sm:grid-cols-3 sm:gap-6">
-                    @foreach ($roadmap as $index => $milestone)
-                        @php
-                            $accent = $roadmapAccents[$index % count($roadmapAccents)];
-                        @endphp
-                        <button @click="toggle({{ $index }})" type="button"
-                            class="group flex flex-col items-center text-center {{ $index === 1 ? 'sm:mt-20' : '' }}">
-                            <span
-                                class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full shadow-lg ring-4 ring-canvas transition group-hover:scale-105"
-                                :class="isOpen({{ $index }}) ? '{{ $accent['bg'] }} text-on-primary' : '{{ $accent['tint'] }} {{ $accent['text'] }}'">
-                                <x-icon :name="$milestone['icon']" class="h-7 w-7" />
-                            </span>
-                            <h3 class="mt-5 font-serif text-2xl text-ink">{{ $milestone['label'] }}</h3>
-                            <div x-show="isOpen({{ $index }})" x-collapse x-cloak class="mt-3 max-w-[240px]">
-                                <p class="text-sm leading-relaxed text-body">{{ $milestone['description'] }}</p>
-                            </div>
-                        </button>
-                    @endforeach
+// ── Reveal on Scroll ──
+const revealEls = document.querySelectorAll('[data-reveal]');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-                    <div class="flex flex-col items-center text-center">
-                        <span
-                            class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-hairline text-muted-soft">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                        </span>
-                        <h3 class="mt-5 font-serif text-2xl text-muted-soft">Segera Hadir</h3>
-                        <p class="mt-3 max-w-[220px] text-sm leading-relaxed text-muted-soft">Roadmap terus bertumbuh
-                            mengikuti kebutuhan komunitas.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+revealEls.forEach(el => observer.observe(el));
 
-    {{-- ============ 09 · SAYAP BARU ============ --}}
-    <section class="relative scroll-mt-20 overflow-hidden py-28 sm:py-36">
-        <x-leaf
-            class="pointer-events-none absolute -right-10 top-4 hidden h-56 w-56 rotate-[10deg] text-ink/[0.04] xl:block" />
+// ── Trigger hero reveals immediately ──
+document.querySelectorAll('.hero [data-reveal]').forEach(el => {
+  setTimeout(() => el.classList.add('visible'), 100);
+});
 
-        <div class="container-app relative">
-            <div class="max-w-2xl" data-reveal>
-                <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">09 &middot; Sayap Baru</span>
-                <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                    Literasi, Workshop, dan Online Course
-                </h2>
-            </div>
-
-            @php
-                $wingAccents = ['bg-primary/15 text-primary', 'bg-accent-teal/15 text-accent-teal', 'bg-accent-blue/15 text-accent-blue'];
-            @endphp
-
-            <div class="mt-16 grid gap-6 sm:grid-cols-3">
-                @foreach ($wings as $index => $wing)
-                    <div class="glow-card rounded-lg border border-hairline bg-canvas p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-                        data-reveal data-reveal-delay="{{ min($index + 1, 5) }}">
-                        <span
-                            class="flex h-12 w-12 items-center justify-center rounded-full {{ $wingAccents[$index % count($wingAccents)] }}">
-                            <x-icon :name="$wing['icon']" class="h-6 w-6" />
-                        </span>
-                        <h3 class="mt-6 font-serif text-2xl text-ink">{{ $wing['title'] }}</h3>
-                        <p class="mt-3 text-base leading-relaxed text-body">{{ $wing['description'] }}</p>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- ============ ARTIKEL & BERITA ============ --}}
-    @if ($latestArticles->isNotEmpty())
-        <section class="bg-surface-soft py-28 sm:py-36">
-            <div class="container-app">
-                <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
-                    <div class="max-w-2xl">
-                        <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">Artikel &amp; Berita</span>
-                        <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                            Kabar kegiatan MLUP Academy
-                        </h2>
-                    </div>
-                    <a href="{{ route('articles.index') }}"
-                        class="inline-flex h-12 shrink-0 items-center justify-center rounded-md border border-hairline px-6 text-sm font-medium text-ink transition hover:bg-canvas">
-                        Lihat Semua Artikel
-                    </a>
-                </div>
-
-                <div class="mt-16 grid gap-6 sm:grid-cols-3">
-                    @foreach ($latestArticles as $index => $article)
-                        <a href="{{ route('articles.show', $article) }}"
-                            class="group flex flex-col overflow-hidden rounded-lg border border-hairline bg-canvas shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-                            data-reveal data-reveal-delay="{{ min($index + 1, 5) }}">
-                            <div class="relative aspect-[16/10] overflow-hidden bg-surface-card">
-                                @if ($article->cover_image)
-                                    <img src="{{ asset('images/articles/' . $article->cover_image) }}" alt="{{ $article->title }}"
-                                        loading="lazy"
-                                        class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105">
-                                @else
-                                    <div class="photo-frame absolute inset-0 text-ink/[0.06]"></div>
-                                    <div class="absolute inset-0 flex items-center justify-center">
-                                        <x-brand-mark class="h-10 w-10 opacity-60" />
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="flex flex-1 flex-col p-6">
-                                <p class="text-xs font-medium uppercase tracking-[0.1em] text-muted">
-                                    {{ $article->published_at->translatedFormat('d F Y') }}</p>
-                                <h3 class="mt-3 font-serif text-xl text-ink">{{ $article->title }}</h3>
-                                @if ($article->excerpt)
-                                    <p class="mt-2 flex-1 text-sm leading-relaxed text-body">{{ $article->excerpt }}</p>
-                                @endif
-                            </div>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
-
-    {{-- ============ KONTAK ============ --}}
-    <section id="kontak" class="relative scroll-mt-20 overflow-hidden py-28 sm:py-36">
-        <x-leaf
-            class="pointer-events-none absolute -right-10 top-16 hidden h-60 w-60 rotate-[22deg] text-ink/[0.04] lg:block" />
-
-        <div class="container-app relative">
-            <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
-                <div data-reveal>
-                    <span class="text-sm font-medium uppercase tracking-[0.15em] text-primary">Kontak</span>
-                    <h2 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-ink text-balance sm:text-6xl">
-                        Kami siap terhubung dengan Anda
-                    </h2>
-                    <p class="mt-6 max-w-lg text-xl leading-relaxed text-body">
-                        Punya pertanyaan, ingin berkolaborasi, atau sekadar menyapa? Hubungi kami lewat kanal berikut.
-                    </p>
-                </div>
-
-                <div class="grid gap-6 sm:grid-cols-2" data-reveal data-reveal-delay="1">
-                    {{-- Card 1: Lokasi --}}
-                    <div class="kontak-card group relative overflow-hidden rounded-2xl border border-hairline bg-canvas p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-                        <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-accent-blue/5 transition-all duration-500 group-hover:scale-150"></div>
-                        <div class="flex items-start gap-4">
-                            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-blue/10 text-accent-blue transition-all duration-300 group-hover:bg-accent-blue group-hover:text-white group-hover:shadow-[0_8px_20px_rgba(59,130,246,0.2)]">
-                                <x-icon name="map-pin" class="h-6 w-6 motion-safe:group-hover:animate-bounce-custom" />
-                            </span>
-                            <div class="space-y-1">
-                                <h3 class="text-xs font-semibold uppercase tracking-[0.15em] text-muted">Lokasi</h3>
-                                <p class="text-xl font-semibold text-ink">Bandung</p>
-                                <p class="text-sm text-body">Jawa Barat, Indonesia</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Card 2: WhatsApp (Vibrant CTA) --}}
-                    <a href="{{ route('landing.whatsapp.redirect', ['source' => 'kontak', 'campaign' => 'gabung_komunitas']) }}"
-                        class="kontak-card-cta group relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary-active p-8 text-on-primary shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_30px_rgba(18,93,56,0.3)]">
-                        <div class="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/10 blur-xl transition-all duration-500 group-hover:scale-125"></div>
-                        <div class="absolute -left-10 -bottom-10 h-28 w-28 rounded-full bg-black/10 blur-lg"></div>
-                        
-                        <div class="relative z-10 flex items-start gap-4">
-                            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white transition-all duration-300 group-hover:bg-white group-hover:text-primary group-hover:shadow-md">
-                                <x-icon name="chat" class="h-6 w-6 motion-safe:group-hover:animate-pulse-custom" />
-                            </span>
-                            <div class="space-y-1">
-                                <h3 class="text-xs font-semibold uppercase tracking-[0.15em] text-on-primary-soft/80">WhatsApp</h3>
-                                <p class="text-xl font-bold text-white">Hubungi Admin</p>
-                                <p class="flex items-center gap-1.5 text-sm font-medium text-white/90">
-                                    Chat Sekarang
-                                    <x-icon name="arrow-right" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-
-                    {{-- Card 3: Jangkauan (Full width) --}}
-                    <div class="kontak-card group relative overflow-hidden rounded-2xl border border-hairline bg-canvas p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:col-span-2">
-                        <div class="absolute right-0 top-0 bottom-0 left-1/2 -z-0 opacity-10 pointer-events-none hidden md:block">
-                            <svg class="h-full w-full" viewBox="0 0 200 100" fill="none" stroke="currentColor">
-                                <path d="M10 40 Q30 30, 50 45 T90 40 T130 50 T170 45" stroke-dasharray="1 3" stroke-width="1"/>
-                                <circle cx="10" cy="40" r="1.5" fill="currentColor"/>
-                                <circle cx="50" cy="45" r="2" fill="currentColor" class="animate-ping-slow"/>
-                                <circle cx="50" cy="45" r="1.5" fill="currentColor"/>
-                                <circle cx="90" cy="40" r="1.5" fill="currentColor"/>
-                                <circle cx="130" cy="50" r="2.5" fill="currentColor"/>
-                                <circle cx="170" cy="45" r="1.5" fill="currentColor"/>
-                            </svg>
-                        </div>
-                        
-                        <div class="relative z-10 flex items-start gap-4">
-                            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-teal/10 text-accent-teal transition-all duration-300 group-hover:bg-accent-teal group-hover:text-white group-hover:shadow-[0_8px_20px_rgba(20,184,166,0.2)]">
-                                <x-icon name="globe" class="h-6 w-6 motion-safe:group-hover:animate-spin-slow" />
-                            </span>
-                            <div class="space-y-2">
-                                <h3 class="text-xs font-semibold uppercase tracking-[0.15em] text-muted">Jangkauan</h3>
-                                <p class="text-xl font-semibold text-ink">Seluruh Indonesia</p>
-                                <div class="flex flex-wrap gap-2 pt-1">
-                                    <span class="inline-flex items-center rounded-md bg-surface-soft px-2.5 py-0.5 text-xs font-medium text-body border border-hairline transition hover:border-accent-teal hover:text-accent-teal">Sumatera</span>
-                                    <span class="inline-flex items-center rounded-md bg-surface-soft px-2.5 py-0.5 text-xs font-medium text-body border border-hairline transition hover:border-accent-teal hover:text-accent-teal">Jawa</span>
-                                    <span class="inline-flex items-center rounded-md bg-surface-soft px-2.5 py-0.5 text-xs font-medium text-body border border-hairline transition hover:border-accent-teal hover:text-accent-teal">Kalimantan</span>
-                                    <span class="inline-flex items-center rounded-md bg-surface-soft px-2.5 py-0.5 text-xs font-medium text-body border border-hairline transition hover:border-accent-teal hover:text-accent-teal">Sulawesi</span>
-                                    <span class="inline-flex items-center rounded-md bg-surface-soft px-2.5 py-0.5 text-xs font-medium text-body border border-hairline transition hover:border-accent-teal hover:text-accent-teal">Papua</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <style>
-            #kontak {
-                background: radial-gradient(circle at 10% 20%, rgba(18, 93, 56, 0.02) 0%, transparent 40%),
-                            radial-gradient(circle at 90% 80%, rgba(196, 107, 45, 0.02) 0%, transparent 40%);
-            }
-            @keyframes bounceCustom {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-5px); }
-            }
-            .animate-bounce-custom {
-                animation: bounceCustom 1s infinite;
-            }
-            
-            @keyframes pulseCustom {
-                0%, 100% { transform: scale(1); opacity: 1; }
-                50% { transform: scale(1.15); opacity: 0.9; }
-            }
-            .animate-pulse-custom {
-                animation: pulseCustom 1.5s infinite;
-            }
-
-            @keyframes spinSlow {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-            .animate-spin-slow {
-                animation: spinSlow 12s linear infinite;
-            }
-            
-            @keyframes pingSlow {
-                0% { transform: scale(1); opacity: 0.8; }
-                70%, 100% { transform: scale(2.5); opacity: 0; }
-            }
-            .animate-ping-slow {
-                animation: pingSlow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
-            }
-        </style>
-    </section>
-
-    {{-- ============ 10 · KOLABORASI ============ --}}
-    <section class="py-28 sm:py-36">
-        <div class="container-app">
-            <div class="relative overflow-hidden rounded-2xl bg-primary px-8 py-24 text-center sm:px-20" data-reveal>
-                <div class="pattern-lattice absolute inset-0 text-on-primary/10"></div>
-                <x-leaf
-                    class="pointer-events-none absolute -left-8 -top-10 hidden h-56 w-56 -rotate-[15deg] text-on-primary/10 md:block" />
-                <x-leaf
-                    class="pointer-events-none absolute -right-10 -bottom-14 hidden h-64 w-64 rotate-[20deg] text-on-primary/10 md:block" />
-                <div class="relative">
-                    <span class="text-sm font-medium uppercase tracking-[0.15em] text-on-primary/70">10 &middot;
-                        Kolaborasi</span>
-                    <h2
-                        class="mx-auto mt-6 max-w-2xl font-serif text-4xl leading-tight tracking-tight text-on-primary text-balance sm:text-6xl">
-                        Mari bergabung bersama kami
-                    </h2>
-                    <p class="mx-auto mt-6 max-w-xl text-xl text-on-primary/85">
-                        Baik sebagai pelajar, mahasiswa, profesional muda, maupun donatur — ada ruang untuk Anda
-                        berkontribusi.
-                    </p>
-                    <div class="mt-10 flex flex-wrap justify-center gap-4">
-                        <a href="{{ route('landing.whatsapp.redirect', ['source' => 'cta_final', 'campaign' => 'gabung_komunitas']) }}"
-                            class="inline-flex h-14 items-center justify-center rounded-md bg-canvas px-8 text-base font-medium text-ink transition hover:bg-surface-soft">
-                            Gabung Komunitas
-                        </a>
-                        <a href="{{ route('landing.whatsapp.redirect', ['source' => 'cta_final', 'campaign' => 'jadi_donatur']) }}"
-                            class="inline-flex h-14 items-center justify-center rounded-md border border-on-primary/40 px-8 text-base font-medium text-on-primary transition hover:bg-primary-active">
-                            Jadi Donatur
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-@endsection
+// ── Mobile Menu Toggle ──
+const mobileBtn = document.querySelector('.navbar-mobile-btn');
+const navLinks = document.querySelector('.navbar-links');
+if (mobileBtn && navLinks) {
+  mobileBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+    });
+  });
+}
+</script>
+</body>
+</html>
