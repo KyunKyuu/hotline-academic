@@ -65,12 +65,7 @@ class HotlineDashboardController extends Controller
             ->limit(10)
             ->get();
 
-        $latestEvents = WaAnalyticsEvent::query()
-            ->latest('occurred_at')
-            ->limit(10)
-            ->get();
-
-        return view('hotline.dashboard', compact('contacts', 'summary', 'campusBreakdown', 'latestEvents', 'group', 'campus', 'status', 'segment'));
+        return view('hotline.dashboard', compact('contacts', 'summary', 'campusBreakdown', 'group', 'campus', 'status', 'segment'));
     }
 
     public function show(WaContact $contact): View

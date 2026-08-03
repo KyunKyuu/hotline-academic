@@ -157,32 +157,6 @@
         </div>
     </div>
 
-    <div class="card section">
-        <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:16px;">Event Terakhir</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Waktu</th>
-                    <th>Jenis Event</th>
-                    <th>Nomor</th>
-                    <th>Source</th>
-                    <th>Referensi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($latestEvents as $event)
-                    <tr>
-                        <td>{{ $event->occurred_at?->format('d M Y H:i') }}</td>
-                        <td><code>{{ $event->event_type }}</code></td>
-                        <td>{{ $event->phone_number ?: '-' }}</td>
-                        <td>{{ $event->source ?: '-' }}</td>
-                        <td class="muted">{{ $event->reference ?: '-' }}</td>
-                    </tr>
-                @empty
-                    <tr><td colspan="5" class="muted" style="text-align: center; padding: 24px 0;">Belum ada log event aktivitas.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+
 </div>
 @endsection

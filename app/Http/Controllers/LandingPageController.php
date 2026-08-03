@@ -420,7 +420,7 @@ class LandingPageController extends Controller
 
     public function redirectToWhatsApp(Request $request): RedirectResponse
     {
-        $source = $request->string('source', 'landing_page')->value();
+        $source = 'website';
         $campaign = $request->string('campaign', 'default')->value();
         $clickToken = 'CTA-'.Str::upper(Str::random(8));
         $message = trim(config('hotline.prefilled_message').' ['.$clickToken.']');
