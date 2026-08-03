@@ -96,18 +96,11 @@ body {
   gap: 10px;
   text-decoration: none;
 }
-.navbar-brand-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  font-family: var(--font-serif);
-  font-size: 14px;
-  color: var(--color-primary);
-  font-weight: 400;
+.navbar-brand-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
 }
 .navbar-brand-text {
   font-family: var(--font-serif);
@@ -1102,7 +1095,7 @@ body {
 <header class="navbar">
   <div class="container-app navbar-inner">
     <a href="{{ route('landing.index') }}" class="navbar-brand">
-      <span class="navbar-brand-badge">M</span>
+      <img src="{{ asset('images/brand/logo.png') }}" alt="MLUP Logo" class="navbar-brand-logo">
       <span class="navbar-brand-text">MLUP <em>Academy</em></span>
     </a>
 
