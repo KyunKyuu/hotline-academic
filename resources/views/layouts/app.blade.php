@@ -436,6 +436,11 @@
                             Partner Komunitas
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.landing.testimonials.index') }}" class="nav-link {{ request()->routeIs('admin.landing.testimonials.*') ? 'active' : '' }}">
+                            Cerita Peserta
+                        </a>
+                    </li>
                 </ul>
             </nav>
 

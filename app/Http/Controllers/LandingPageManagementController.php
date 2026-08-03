@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LandingSetting;
 use App\Models\ActivityMoment;
 use App\Models\Partner;
+use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -271,5 +272,70 @@ class LandingPageManagementController extends Controller
         $partner->delete();
 
         return redirect()->route('admin.landing.index')->with('status', 'Partner Komunitas berhasil dihapus.');
+    }
+
+    // --- TESTIMONIALS CRUD ---
+
+    public function testimonialsIndex(): View
+    {
+        $testimonials = Testimonial::orderBy('order')->orderBy('id')->get();
+        return view('admin.landing.testimonials.index', compact('testimonials'));
+    }
+
+    public function testimonialsCreate(): View
+    {
+        return view('admin.landing.testimonials.form', [
+            'testimonial' => new Testimonial(),
+        ]);
+    }
+
+    public function testimonialsStore(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'context' => ['required', 'string', 'max:150'],
+            'message' => ['required', 'string'],
+            'avatar' => ['nullable', 'string', 'max:10'],
+            'order' => ['required', 'integer'],
+        ]);
+
+        if (empty($data['avatar'])) {
+            $data['avatar'] = '✦';
+        }
+
+        Testimonial::create($data);
+
+        return redirect()->route('admin.landing.testimonials.index')->with('status', 'Cerita Peserta berhasil ditambahkan.');
+    }
+
+    public function testimonialsEdit(Testimonial $testimonial): View
+    {
+        return view('admin.landing.testimonials.form', compact('testimonial'));
+    }
+
+    public function testimonialsUpdate(Request $request, Testimonial $testimonial): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'context' => ['required', 'string', 'max:150'],
+            'message' => ['required', 'string'],
+            'avatar' => ['nullable', 'string', 'max:10'],
+            'order' => ['required', 'integer'],
+        ]);
+
+        if (empty($data['avatar'])) {
+            $data['avatar'] = '✦';
+        }
+
+        $testimonial->update($data);
+
+        return redirect()->route('admin.landing.testimonials.index')->with('status', 'Cerita Peserta berhasil diperbarui.');
+    }
+
+    public function testimonialsDestroy(Testimonial $testimonial): RedirectResponse
+    {
+        $testimonial->delete();
+
+        return redirect()->route('admin.landing.testimonials.index')->with('status', 'Cerita Peserta berhasil dihapus.');
     }
 }

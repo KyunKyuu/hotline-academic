@@ -59,5 +59,14 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
             Route::put('/{partner}', [LandingPageManagementController::class, 'partnersUpdate'])->name('update');
             Route::delete('/{partner}', [LandingPageManagementController::class, 'partnersDestroy'])->name('destroy');
         });
+
+        Route::prefix('testimonials')->name('testimonials.')->group(function (): void {
+            Route::get('/', [LandingPageManagementController::class, 'testimonialsIndex'])->name('index');
+            Route::get('/create', [LandingPageManagementController::class, 'testimonialsCreate'])->name('create');
+            Route::post('/', [LandingPageManagementController::class, 'testimonialsStore'])->name('store');
+            Route::get('/{testimonial}/edit', [LandingPageManagementController::class, 'testimonialsEdit'])->name('edit');
+            Route::put('/{testimonial}', [LandingPageManagementController::class, 'testimonialsUpdate'])->name('update');
+            Route::delete('/{testimonial}', [LandingPageManagementController::class, 'testimonialsDestroy'])->name('destroy');
+        });
     });
 });

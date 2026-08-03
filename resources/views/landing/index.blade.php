@@ -1476,33 +1476,21 @@ body {
     </div>
 
     <div class="testi-grid">
-      <div class="testi-card" data-reveal data-reveal-delay="1">
-        <span class="testi-quote-mark">"</span>
-        <p class="testi-text">
-          Skripsi saya mandek hampir setahun. Bukan karena tidak mau, tapi setiap kali buka laptop rasanya mual. Saya pikir saya yang bermasalah. Ternyata ada cara untuk mulai lagi — dari yang kecil dulu, satu paragraf dalam sehari.
-        </p>
-        <div class="testi-meta">
-          <div class="testi-avatar">✦</div>
-          <div>
-            <div class="testi-name">A., Mahasiswi S1</div>
-            <div class="testi-context">Semester 9 · Hambatan penulisan skripsi</div>
+      @foreach($testimonials as $index => $testi)
+        <div class="testi-card" data-reveal data-reveal-delay="{{ min($index + 1, 4) }}">
+          <span class="testi-quote-mark">"</span>
+          <p class="testi-text">
+            {{ $testi['message'] }}
+          </p>
+          <div class="testi-meta">
+            <div class="testi-avatar">{{ $testi['avatar'] ?? '✦' }}</div>
+            <div>
+              <div class="testi-name">{{ $testi['name'] }}</div>
+              <div class="testi-context">{{ $testi['context'] }}</div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="testi-card" data-reveal data-reveal-delay="2">
-        <span class="testi-quote-mark">"</span>
-        <p class="testi-text">
-          Saya tidak cerita ke siapapun karena takut dianggap lebay. Ke kakak mentor pun awalnya ragu. Tapi ternyata dia betul-betul mendengarkan — bukan langsung kasih solusi, tapi bantu saya petakan dulu apa yang sebenarnya terjadi.
-        </p>
-        <div class="testi-meta">
-          <div class="testi-avatar">◈</div>
-          <div>
-            <div class="testi-name">R., Mahasiswa S1</div>
-            <div class="testi-context">Semester 6 · Tekanan psikis & motivasi</div>
-          </div>
-        </div>
-      </div>
+      @endforeach
     </div>
 
     <p class="testi-disclaimer" data-reveal data-reveal-delay="3">

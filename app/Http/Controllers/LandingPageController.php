@@ -7,6 +7,7 @@ use App\Models\WaAnalyticsEvent;
 use App\Models\LandingSetting;
 use App\Models\ActivityMoment;
 use App\Models\Partner;
+use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -82,6 +83,27 @@ class LandingPageController extends Controller
         }
         
         unset($content['gallery']);
+
+        // Dynamic testimonials (Cerita dari Peserta)
+        $dbTestimonials = Testimonial::orderBy('order')->orderBy('id')->get();
+        if ($dbTestimonials->isNotEmpty()) {
+            $content['testimonials'] = $dbTestimonials->toArray();
+        } else {
+            $content['testimonials'] = [
+                [
+                    'avatar' => '✦',
+                    'name' => 'A., Mahasiswi S1',
+                    'context' => 'Semester 9 · Hambatan penulisan skripsi',
+                    'message' => 'Skripsi saya mandek hampir setahun. Bukan karena tidak mau, tapi setiap kali buka laptop rasanya mual. Saya pikir saya yang bermasalah. Ternyata ada cara untuk mulai lagi — dari yang kecil dulu, satu paragraf dalam sehari.',
+                ],
+                [
+                    'avatar' => '◈',
+                    'name' => 'R., Mahasiswa S1',
+                    'context' => 'Semester 6 · Tekanan psikis & motivasi',
+                    'message' => 'Saya tidak cerita ke siapapun karena takut dianggap lebay. Ke kakak mentor pun awalnya ragu. Tapi ternyata dia betul-betul mendengarkan — bukan langsung kasih solusi, tapi bantu saya petakan dulu apa yang sebenarnya terjadi.',
+                ]
+            ];
+        }
 
         return view('landing.index', $content);
     }
