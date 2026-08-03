@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\WaAdminFollowup;
 use App\Models\WaAnalyticsEvent;
 use App\Models\WaContact;
+use App\Models\ReferralCode;
 use App\Models\WaConversation;
 use App\Models\WaMessage;
 use App\Support\HotlineState;
@@ -58,6 +59,16 @@ class HotlineDummySeeder extends Seeder
                 'campaign' => 'default',
             ],
         ];
+
+        // Seed referral codes
+        ReferralCode::firstOrCreate(
+            ['code' => 'REF-A01'],
+            ['description' => 'Referral Code Dummy A01', 'usage_count' => 1]
+        );
+        ReferralCode::firstOrCreate(
+            ['code' => 'REF-CAMPUS'],
+            ['description' => 'Referral Code Dummy Campus', 'usage_count' => 1]
+        );
 
         foreach ($samples as $index => $sample) {
             $contact = WaContact::updateOrCreate(

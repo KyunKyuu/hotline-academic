@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\WaAdminFollowup;
 use App\Models\WaAnalyticsEvent;
 use App\Models\WaContact;
+use App\Models\ReferralCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -80,5 +81,70 @@ class HotlineDashboardController extends Controller
         ]);
 
         return back();
+    }
+
+    // --- REFERRAL CODES CRUD ---
+
+    public function referralsIndex(): View
+    {
+        $referrals = ReferralCode::orderBy('code')->paginate(15);
+        return view('admin.hotline.referrals.index', compact('referrals'));
+    }
+
+    public function referralsCreate(): View
+    {
+        return view('admin.hotline.referrals.form', [
+            'referral' => new ReferralCode(),
+        ]);
+    }
+
+    public function referralsStore(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'code' => ['required', 'string', 'max:50', 'unique:referral_codes,code'],
+            'description' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $data['code'] = strtoupper(str_replace(' ', '', $data['code']));
+
+        // Double check uniqueness after normalization
+        if (ReferralCode::where('code', $data['code'])->exists()) {
+            return back()->withErrors(['code' => 'Kode referral tersebut sudah digunakan.'])->withInput();
+        }
+
+        ReferralCode::create($data);
+
+        return redirect()->route('admin.hotline.referrals.index')->with('status', 'Kode Referral berhasil ditambahkan.');
+    }
+
+    public function referralsEdit(ReferralCode $referral): View
+    {
+        return view('admin.hotline.referrals.form', compact('referral'));
+    }
+
+    public function referralsUpdate(Request $request, ReferralCode $referral): RedirectResponse
+    {
+        $data = $request->validate([
+            'code' => ['required', 'string', 'max:50', 'unique:referral_codes,code,' . $referral->id],
+            'description' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $data['code'] = strtoupper(str_replace(' ', '', $data['code']));
+
+        // Double check uniqueness after normalization
+        if (ReferralCode::where('code', $data['code'])->where('id', '!=', $referral->id)->exists()) {
+            return back()->withErrors(['code' => 'Kode referral tersebut sudah digunakan.'])->withInput();
+        }
+
+        $referral->update($data);
+
+        return redirect()->route('admin.hotline.referrals.index')->with('status', 'Kode Referral berhasil diperbarui.');
+    }
+
+    public function referralsDestroy(ReferralCode $referral): RedirectResponse
+    {
+        $referral->delete();
+
+        return redirect()->route('admin.hotline.referrals.index')->with('status', 'Kode Referral berhasil dihapus.');
     }
 }

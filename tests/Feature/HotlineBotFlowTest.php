@@ -15,6 +15,11 @@ class HotlineBotFlowTest extends TestCase
     {
         config()->set('hotline.bot_enabled', true);
 
+        \App\Models\ReferralCode::create([
+            'code' => 'REF-ABC',
+            'description' => 'Test Referral Code',
+        ]);
+
         $service = app(HotlineBotService::class);
 
         $service->processIncoming($this->payloadFor('628111111111', 'Halo admin'));

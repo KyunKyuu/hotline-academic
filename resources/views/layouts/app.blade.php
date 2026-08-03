@@ -404,6 +404,11 @@
                             Dashboard
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.hotline.referrals.index') }}" class="nav-link {{ request()->routeIs('admin.hotline.referrals.*') ? 'active' : '' }}">
+                            Kode Referral
+                        </a>
+                    </li>
                 </ul>
             </nav>
 

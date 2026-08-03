@@ -27,6 +27,16 @@ Route::middleware(['auth', 'admin'])->group(function (): void {
         Route::get('/', [HotlineDashboardController::class, 'index'])->name('hotline.dashboard');
         Route::get('/contacts/{contact}', [HotlineDashboardController::class, 'show'])->name('hotline.contacts.show');
         Route::patch('/contacts/{contact}/follow-up', [HotlineDashboardController::class, 'updateFollowUp'])->name('hotline.contacts.follow-up');
+
+        // Referral Codes CRUD
+        Route::prefix('referrals')->name('admin.hotline.referrals.')->group(function (): void {
+            Route::get('/', [HotlineDashboardController::class, 'referralsIndex'])->name('index');
+            Route::get('/create', [HotlineDashboardController::class, 'referralsCreate'])->name('create');
+            Route::post('/', [HotlineDashboardController::class, 'referralsStore'])->name('store');
+            Route::get('/{referral}/edit', [HotlineDashboardController::class, 'referralsEdit'])->name('edit');
+            Route::put('/{referral}', [HotlineDashboardController::class, 'referralsUpdate'])->name('update');
+            Route::delete('/{referral}', [HotlineDashboardController::class, 'referralsDestroy'])->name('destroy');
+        });
     });
 
     Route::prefix('admin/articles')->name('admin.articles.')->group(function (): void {

@@ -7,6 +7,7 @@ use App\Models\WaAnalyticsEvent;
 use App\Models\WaContact;
 use App\Models\WaConversation;
 use App\Models\WaMessage;
+use App\Models\ReferralCode;
 use App\Support\HotlineState;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -302,8 +303,27 @@ class HotlineBotService
                 return;
             }
 
-            $referralCode = $this->normalizeReferral($messageBody);
+            $inputCode = $this->normalizeReferral($messageBody);
+            $referral = null;
+
+            if ($inputCode !== null) {
+                // User input some code, look it up in the database
+                $referral = ReferralCode::where('code', $inputCode)->first();
+
+                if (!$referral) {
+                    // Invalid code: ask them to retry or type 'tidak ada' to skip
+                    $this->whatsApp->sendText($contact, $conversation, "Kode referral tidak valid. Silakan kirimkan kode yang benar, atau balas dengan 'tidak ada' jika tidak ada.");
+                    return;
+                }
+            }
+
+            // At this point, it's either skipped (null) or a valid referral (model exists)
+            $referralCode = $referral ? $referral->code : null;
             $groupType = $referralCode ? 'A' : 'B';
+
+            if ($referral) {
+                $referral->increment('usage_count');
+            }
 
             $contact->forceFill([
                 'referral_code' => $referralCode,
