@@ -385,6 +385,76 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Laravel Tailwind Pagination Fallbacks for Custom Vanilla CSS layout */
+        nav[role="navigation"] {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 16px;
+        }
+        nav[role="navigation"] svg {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        nav[role="navigation"] .flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        nav[role="navigation"] .justify-between {
+            justify-content: space-between;
+        }
+        nav[role="navigation"] .hidden {
+            display: none;
+        }
+        @media (min-width: 640px) {
+            nav[role="navigation"] .sm\:flex-1 {
+                flex: 1 1 0%;
+            }
+            nav[role="navigation"] .sm\:flex {
+                display: flex;
+            }
+            nav[role="navigation"] .sm\:items-center {
+                align-items: center;
+            }
+            nav[role="navigation"] .sm\:justify-between {
+                justify-content: space-between;
+            }
+        }
+        nav[role="navigation"] a, nav[role="navigation"] span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            font-size: 13.5px;
+            border-radius: 6px;
+            background-color: var(--surface-2);
+            border: 1px solid var(--hairline-strong);
+            color: var(--ink);
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        nav[role="navigation"] a:hover {
+            background-color: var(--surface-3);
+            border-color: var(--hairline-tertiary);
+        }
+        nav[role="navigation"] span[aria-current="page"] {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            border-color: var(--primary);
+        }
+        nav[role="navigation"] span[aria-disabled="true"] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        nav[role="navigation"] p {
+            font-size: 13.5px;
+            color: var(--ink-subtle);
+        }
     </style>
 </head>
 <body>
