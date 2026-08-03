@@ -79,29 +79,6 @@
         </div>
     </div>
 
-    <div class="card section">
-        <h3 style="margin-top:0; font-size:18px; font-weight:normal; margin-bottom:20px;">Log Aktivitas & Event Analisis</h3>
-        
-        <div style="position: relative; padding-left: 24px; margin-left: 8px; border-left: 2px solid var(--hairline); display: flex; flex-direction: column; gap: 20px;">
-            @forelse($contact->analyticsEvents as $event)
-                <div style="position: relative;">
-                    <!-- Timeline Dot -->
-                    <div style="position: absolute; left: -31px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: {{ $event->event_type === 'referral_submitted' ? 'var(--primary)' : ($event->event_type === 'biodata_completed' ? 'var(--semantic-success)' : 'var(--ink-tertiary)') }}; border: 3px solid var(--canvas);"></div>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap;">
-                        <div>
-                            <code style="font-size: 13px; font-weight: 600; color: var(--ink);">{{ $event->event_type }}</code>
-                            @if($event->reference)
-                                <span class="pill" style="font-size: 11.5px; margin-left: 8px; font-weight: 500;">{{ $event->reference }}</span>
-                            @endif
-                        </div>
-                        <span class="mini" style="color: var(--ink-subtle);">{{ $event->occurred_at?->format('d M Y H:i') }}</span>
-                    </div>
-                </div>
-            @empty
-                <p class="muted" style="padding: 12px 0;">Belum ada log event yang terekam.</p>
-            @endforelse
-        </div>
-    </div>
+
 </div>
 @endsection
