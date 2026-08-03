@@ -408,6 +408,9 @@
         nav[role="navigation"] .justify-between {
             justify-content: space-between;
         }
+        nav[role="navigation"] .sm\:hidden {
+            display: flex;
+        }
         nav[role="navigation"] .hidden {
             display: none;
         }
@@ -416,13 +419,19 @@
                 flex: 1 1 0%;
             }
             nav[role="navigation"] .sm\:flex {
-                display: flex;
+                display: flex !important;
             }
             nav[role="navigation"] .sm\:items-center {
                 align-items: center;
             }
             nav[role="navigation"] .sm\:justify-between {
                 justify-content: space-between;
+            }
+            nav[role="navigation"] .sm\:hidden {
+                display: none !important;
+            }
+            nav[role="navigation"] .hidden {
+                display: flex;
             }
         }
         nav[role="navigation"] a, nav[role="navigation"] span {
@@ -454,6 +463,15 @@
         nav[role="navigation"] p {
             font-size: 13.5px;
             color: var(--ink-subtle);
+        }
+        nav[role="navigation"] p span {
+            display: inline;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: inherit;
+            color: var(--ink);
+            font-weight: 600;
         }
     </style>
 </head>
