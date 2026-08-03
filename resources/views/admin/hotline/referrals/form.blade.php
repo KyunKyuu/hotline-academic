@@ -33,6 +33,12 @@
             </div>
 
             <div style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-weight:600;">Nama Referral</label>
+                <input type="text" name="name" value="{{ old('name', $referral->name) }}" placeholder="Contoh: ITENAS" required>
+                <span class="mini">Nama label yang akan ditambahkan pada nama grup (misalnya: Group A (ITENAS)).</span>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:6px;">
                 <label style="font-weight:600;">Keterangan (Rahasia Admin)</label>
                 <input type="text" name="description" value="{{ old('description', $referral->description) }}" placeholder="Contoh: Dibagikan ke BEM Kampus X untuk mahasiswa berprestasi">
                 <span class="mini">Keterangan ini hanya bisa dibaca oleh admin sebagai catatan penyebaran kode.</span>

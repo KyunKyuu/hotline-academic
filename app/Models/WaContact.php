@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WaContact extends Model
@@ -58,5 +59,10 @@ class WaContact extends Model
     public function followUps(): HasMany
     {
         return $this->hasMany(WaAdminFollowup::class, 'contact_id');
+    }
+
+    public function referralCode(): BelongsTo
+    {
+        return $this->belongsTo(ReferralCode::class, 'referral_code', 'code');
     }
 }

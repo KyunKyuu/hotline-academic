@@ -20,7 +20,7 @@ class HotlineDashboardController extends Controller
         $segment = $request->query('segment', 'all');
 
         $contactsQuery = WaContact::query()
-            ->with(['followUps' => fn ($query) => $query->latest('id')])
+            ->with(['followUps' => fn ($query) => $query->latest('id'), 'referralCode'])
             ->when(filled($group), fn ($query) => $query->where('group_type', $group))
             ->when(filled($campus), fn ($query) => $query->where('campus', 'like', '%' . $campus . '%'))
             ->when(filled($status), function ($query) use ($status) {
@@ -116,6 +116,7 @@ class HotlineDashboardController extends Controller
     {
         $data = $request->validate([
             'code' => ['required', 'string', 'max:50', 'unique:referral_codes,code'],
+            'name' => ['required', 'string', 'max:100'],
             'description' => ['nullable', 'string', 'max:255'],
         ]);
 
@@ -140,6 +141,7 @@ class HotlineDashboardController extends Controller
     {
         $data = $request->validate([
             'code' => ['required', 'string', 'max:50', 'unique:referral_codes,code,' . $referral->id],
+            'name' => ['required', 'string', 'max:100'],
             'description' => ['nullable', 'string', 'max:255'],
         ]);
 

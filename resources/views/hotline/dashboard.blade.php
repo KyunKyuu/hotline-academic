@@ -126,7 +126,7 @@
                         <td>{{ $contact->campus ?: '-' }}</td>
                         <td>
                             @if($contact->group_type)
-                                <span class="pill">Group {{ $contact->group_type }}</span>
+                                <span class="pill">Group {{ $contact->group_type }}@if($contact->group_type === 'A' && $contact->referralCode) ({{ $contact->referralCode->name }})@endif</span>
                             @else
                                 <span class="muted">-</span>
                             @endif

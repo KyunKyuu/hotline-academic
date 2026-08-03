@@ -23,7 +23,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th style="width:200px;">Kode Referral</th>
+                    <th style="width:180px;">Kode Referral</th>
+                    <th style="width:180px;">Nama Referral</th>
                     <th>Keterangan (Rahasia Admin)</th>
                     <th style="width:150px; text-align:center;">Jumlah Penggunaan</th>
                     <th style="width:180px; text-align:right;">Aksi</th>
@@ -37,6 +38,7 @@
                                 {{ $ref->code }}
                             </code>
                         </td>
+                        <td style="vertical-align:middle;"><strong>{{ $ref->name }}</strong></td>
                         <td style="vertical-align:middle; color: var(--ink-subtle);">{{ $ref->description ?: '-' }}</td>
                         <td style="vertical-align:middle; text-align:center; font-weight: 600;">{{ $ref->usage_count }}</td>
                         <td style="vertical-align:middle; text-align:right;">

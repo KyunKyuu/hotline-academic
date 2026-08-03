@@ -63,11 +63,11 @@ class HotlineDummySeeder extends Seeder
         // Seed referral codes
         ReferralCode::firstOrCreate(
             ['code' => 'REF-A01'],
-            ['description' => 'Referral Code Dummy A01', 'usage_count' => 1]
+            ['name' => 'A01', 'description' => 'Referral Code Dummy A01', 'usage_count' => 1]
         );
         ReferralCode::firstOrCreate(
             ['code' => 'REF-CAMPUS'],
-            ['description' => 'Referral Code Dummy Campus', 'usage_count' => 1]
+            ['name' => 'CAMPUS', 'description' => 'Referral Code Dummy Campus', 'usage_count' => 1]
         );
 
         foreach ($samples as $index => $sample) {
