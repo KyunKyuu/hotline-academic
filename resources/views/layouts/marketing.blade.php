@@ -24,133 +24,286 @@
     <meta name="twitter:description" content="{{ $metaDescription }}">
     <meta name="twitter:image" content="{{ asset('images/brand/logo.png') }}">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+    /* ─── DESIGN TOKENS (mirroring MLUP system) ─── */
+    :root {
+      --font-serif: 'Fraunces', 'Times New Roman', serif;
+      --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+
+      --color-primary: #c2793a;
+      --color-primary-active: #9c5f2b;
+      --color-ink: #23261f;
+      --color-body: #40453b;
+      --color-muted: #666b5d;
+      --color-muted-soft: #8d9284;
+      --color-hairline: #e0e2d8;
+      --color-canvas: #f8f8f4;
+      --color-surface-soft: #f0f1ea;
+      --color-surface-card: #e7e9de;
+      --color-surface-dark: #20291f;
+      --color-surface-dark-elevated: #2b3729;
+      --color-on-primary: #fffaf3;
+      --color-on-dark: #f2f4ec;
+      --color-on-dark-soft: #aab5a0;
+      --color-accent-teal: #5f8a52;
+      --color-accent-amber: #d1a13a;
+      --color-accent-blue: #3f728f;
+
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-2xl: 24px;
+      --radius-pill: 9999px;
+    }
+
+    /* ─── SCROLL PROGRESS ─── */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--color-primary);
+      transform-origin: left;
+      transform: scaleX(0);
+      z-index: 100;
+      transition: transform 0.05s linear;
+    }
+
+    /* ─── NAVBAR ─── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(248, 248, 244, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--color-hairline);
+    }
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .navbar-brand-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--color-canvas);
+      border: 1px solid var(--color-hairline);
+      font-family: var(--font-serif);
+      font-size: 14px;
+      color: var(--color-primary);
+      font-weight: 400;
+    }
+    .navbar-brand-text {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      color: var(--color-ink);
+      font-weight: 400;
+    }
+    .navbar-brand-text em {
+      font-style: italic;
+      color: var(--color-primary);
+    }
+    .navbar-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .navbar-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .navbar-links a:hover { color: var(--color-ink); }
+    .navbar-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      padding: 0 20px;
+      border-radius: var(--radius-md);
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.2s;
+    }
+    .navbar-cta:hover {
+      background: var(--color-primary-active);
+      transform: translateY(-1px);
+    }
+    .navbar-mobile-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-md);
+      width: 40px; height: 40px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-ink);
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      background: var(--color-ink);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      color: rgba(242,244,236,0.6);
+    }
+    .footer-brand em { font-style: italic; color: var(--color-primary); }
+    .footer-back {
+      font-size: 13px;
+      color: rgba(170,181,160,0.6);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+    .footer-back:hover { color: var(--color-on-dark); }
+    .footer-note {
+      font-size: 12px;
+      color: rgba(170,181,160,0.35);
+      text-align: center;
+      width: 100%;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: 16px;
+    }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 768px) {
+      .navbar-links, .navbar-cta-wrap { display: none; }
+      .navbar-mobile-btn { display: flex; }
+      
+      /* Dropdown styles for mobile links when active */
+      .navbar-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 68px;
+        left: 0;
+        right: 0;
+        background: rgba(248, 248, 244, 0.98);
+        border-bottom: 1px solid var(--color-hairline);
+        padding: 20px;
+        gap: 16px;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+      }
+    }
+    </style>
 </head>
 <body class="bg-canvas text-body font-sans antialiased">
 
-    <div id="scroll-progress" class="fixed inset-x-0 top-0 z-[60] h-[3px] origin-left scale-x-0 bg-primary"></div>
+    <div id="scroll-progress"></div>
 
-    <header x-data="siteNav()" class="sticky top-0 z-50 border-b transition-colors duration-300"
-            :class="scrolled ? 'bg-canvas/90 backdrop-blur border-hairline' : 'bg-canvas/0 border-transparent'">
-        <div class="container-app flex h-16 items-center justify-between md:h-[72px]">
-            <a href="{{ route('landing.index') }}" class="flex items-center gap-2.5">
-                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-canvas ring-1 ring-hairline">
-                    <x-brand-mark class="h-6 w-6" />
-                </span>
-                <span class="font-serif text-lg font-medium tracking-tight text-ink">MLUP <span class="italic">Academy</span></span>
-            </a>
+    <!-- ══════════ NAVBAR ══════════ -->
+    <header class="navbar">
+      <div class="container-app navbar-inner">
+        <a href="{{ route('landing.index') }}" class="navbar-brand">
+          <span class="navbar-brand-badge">M</span>
+          <span class="navbar-brand-text">MLUP <em>Academy</em></span>
+        </a>
 
-            <nav class="hidden items-center gap-8 lg:flex">
-                <a href="#tentang" class="text-sm font-medium text-body transition hover:text-ink">Tentang Kami</a>
-                <a href="#visi-misi" class="text-sm font-medium text-body transition hover:text-ink">Visi &amp; Misi</a>
-                <a href="#nilai" class="text-sm font-medium text-body transition hover:text-ink">Nilai Kami</a>
-                <a href="#komunitas" class="text-sm font-medium text-body transition hover:text-ink">Komunitas</a>
-                <a href="#program" class="text-sm font-medium text-body transition hover:text-ink">Program</a>
-                <a href="{{ route('articles.index') }}" class="text-sm font-medium text-body transition hover:text-ink">Artikel</a>
-            </nav>
+        <ul class="navbar-links">
+          <li><a href="{{ route('landing.index') }}#masalah">Yang Dicover</a></li>
+          <li><a href="{{ route('landing.index') }}#fasilitator">Fasilitator</a></li>
+          <li><a href="{{ route('landing.index') }}#alur">Cara Kerja</a></li>
+          <li><a href="{{ route('landing.index') }}#cerita">Cerita</a></li>
+        </ul>
 
-            <div class="hidden items-center gap-3 lg:flex">
-                @auth
-                    <a href="{{ route('hotline.dashboard') }}" class="text-sm font-medium text-body transition hover:text-ink">Dashboard</a>
-                @else
-                    <a href="{{ route('admin.login') }}" class="text-sm font-medium text-body transition hover:text-ink">Login Admin</a>
-                @endauth
-                <a href="{{ route('landing.whatsapp.redirect', ['source' => 'navbar', 'campaign' => 'gabung_komunitas']) }}"
-                   class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-on-primary shadow-sm transition hover:bg-primary-active">
-                    Gabung Komunitas
-                </a>
-            </div>
-
-            <button @click="open = !open" class="flex h-10 w-10 items-center justify-center rounded-md border border-hairline text-ink lg:hidden" aria-label="Buka menu">
-                <svg x-show="!open" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                <svg x-show="open" x-cloak class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
+        <div class="navbar-cta-wrap">
+          <a href="{{ route('landing.index') }}#hubungi" class="navbar-cta">Hubungi Sekarang</a>
         </div>
 
-        <div x-show="open" x-cloak x-transition @click.outside="close()" class="border-t border-hairline bg-canvas px-5 pb-6 pt-2 lg:hidden">
-            <nav class="flex flex-col gap-1 py-2">
-                <a @click="close()" href="#tentang" class="rounded-md px-3 py-2.5 text-sm font-medium text-body hover:bg-surface-soft hover:text-ink">Tentang Kami</a>
-                <a @click="close()" href="#visi-misi" class="rounded-md px-3 py-2.5 text-sm font-medium text-body hover:bg-surface-soft hover:text-ink">Visi &amp; Misi</a>
-                <a @click="close()" href="#nilai" class="rounded-md px-3 py-2.5 text-sm font-medium text-body hover:bg-surface-soft hover:text-ink">Nilai Kami</a>
-                <a @click="close()" href="#komunitas" class="rounded-md px-3 py-2.5 text-sm font-medium text-body hover:bg-surface-soft hover:text-ink">Komunitas</a>
-                <a @click="close()" href="#program" class="rounded-md px-3 py-2.5 text-sm font-medium text-body hover:bg-surface-soft hover:text-ink">Program</a>
-                <a @click="close()" href="{{ route('articles.index') }}" class="rounded-md px-3 py-2.5 text-sm font-medium text-body hover:bg-surface-soft hover:text-ink">Artikel</a>
-                @auth
-                    <a @click="close()" href="{{ route('hotline.dashboard') }}" class="rounded-md px-3 py-2.5 text-sm font-medium text-body hover:bg-surface-soft hover:text-ink">Dashboard</a>
-                @else
-                    <a @click="close()" href="{{ route('admin.login') }}" class="rounded-md px-3 py-2.5 text-sm font-medium text-body hover:bg-surface-soft hover:text-ink">Login Admin</a>
-                @endauth
-            </nav>
-            <a href="{{ route('landing.whatsapp.redirect', ['source' => 'navbar_mobile', 'campaign' => 'gabung_komunitas']) }}"
-               class="mt-2 flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-on-primary">
-                Gabung Komunitas
-            </a>
-        </div>
+        <button class="navbar-mobile-btn" aria-label="Menu">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
     </header>
 
     <main>
         @yield('content')
     </main>
 
-    <footer class="relative overflow-hidden bg-surface-dark py-16 text-on-dark-soft">
-        <div class="container-app">
-            <div class="grid gap-12 lg:grid-cols-[1.3fr_0.9fr_0.9fr_1fr]">
-                <div>
-                    <a href="{{ route('landing.index') }}" class="flex items-center gap-2.5">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-on-dark">
-                            <x-brand-mark class="h-6 w-6" />
-                        </span>
-                        <span class="font-serif text-lg font-medium tracking-tight text-on-dark">MLUP <span class="italic">Academy</span></span>
-                    </a>
-                    <p class="mt-4 max-w-xs text-sm leading-relaxed">
-                        Komunitas pendidikan bagi pelajar dan mahasiswa muslim Indonesia — mempertemukan keunggulan akademik dan kekuatan keislaman dalam satu ekosistem.
-                    </p>
-                    <p class="mt-6 text-xs uppercase tracking-[0.15em] text-on-dark-soft/70">Berdiri 23 Desember 2025 &middot; Berbasis di Bandung</p>
-                </div>
-
-                <div>
-                    <p class="text-xs font-medium uppercase tracking-[0.15em] text-on-dark/60">Jelajahi</p>
-                    <nav class="mt-4 flex flex-col gap-3 text-sm">
-                        <a href="#tentang" class="transition hover:text-on-dark">Tentang Kami</a>
-                        <a href="#visi-misi" class="transition hover:text-on-dark">Visi &amp; Misi</a>
-                        <a href="#nilai" class="transition hover:text-on-dark">Nilai Kami</a>
-                        <a href="#program" class="transition hover:text-on-dark">Program</a>
-                    </nav>
-                </div>
-
-                <div>
-                    <p class="text-xs font-medium uppercase tracking-[0.15em] text-on-dark/60">Organisasi</p>
-                    <nav class="mt-4 flex flex-col gap-3 text-sm">
-                        <a href="#komunitas" class="transition hover:text-on-dark">Ekosistem &amp; Mitra</a>
-                        @auth
-                            <a href="{{ route('hotline.dashboard') }}" class="transition hover:text-on-dark">Dashboard Admin</a>
-                        @else
-                            <a href="{{ route('admin.login') }}" class="transition hover:text-on-dark">Login Admin</a>
-                        @endauth
-                    </nav>
-                </div>
-
-                <div>
-                    <p class="text-xs font-medium uppercase tracking-[0.15em] text-on-dark/60">Terhubung</p>
-                    <p class="mt-4 text-sm leading-relaxed">Punya pertanyaan atau ingin berkolaborasi? Sapa kami lewat WhatsApp.</p>
-                    <a href="{{ route('landing.whatsapp.redirect', ['source' => 'footer', 'campaign' => 'gabung_komunitas']) }}"
-                       class="mt-4 inline-flex h-10 items-center justify-center rounded-md bg-surface-dark-elevated px-5 text-sm font-medium text-on-dark transition hover:bg-surface-dark-soft">
-                        Chat WhatsApp
-                    </a>
-                </div>
-            </div>
-
-            <div class="relative mt-16 overflow-hidden" aria-hidden="true">
-                <p class="select-none whitespace-nowrap text-center font-sans font-bold leading-[0.85] tracking-tighter text-on-dark/[0.07]" style="font-size: clamp(3rem, 15vw, 11rem);">
-                    LEVEL UP
-                </p>
-            </div>
-
-            <div class="mt-10 flex flex-col gap-3 border-t border-white/10 pt-8 text-xs text-on-dark-soft/70 sm:flex-row sm:items-center sm:justify-between">
-                <p>&copy; {{ date('Y') }} MLUP (Muslim Level Up) Academy. Seluruh hak cipta dilindungi.</p>
-                <p>Unggul dalam Ilmu &middot; Kuat dalam Iman</p>
-            </div>
+    <!-- ══════════ FOOTER ══════════ -->
+    <footer class="footer">
+      <div class="container-app">
+        <div class="footer-inner">
+          <span class="footer-brand">MLUP <em>Academy</em> — Hotline Akademik</span>
+          
+          <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center;">
+            <a href="{{ route('articles.index') }}" class="footer-back" style="color: rgba(170,181,160,0.6); text-decoration: none; font-size: 13.5px; transition: color 0.15s;">Artikel</a>
+            @auth
+              <a href="{{ route('hotline.dashboard') }}" class="footer-back" style="color: rgba(170,181,160,0.6); text-decoration: none; font-size: 13.5px; transition: color 0.15s;">Dashboard Admin</a>
+            @else
+              <a href="{{ route('admin.login') }}" class="footer-back" style="color: rgba(170,181,160,0.6); text-decoration: none; font-size: 13.5px; transition: color 0.15s;">Login Admin</a>
+            @endauth
+            <a href="https://mlup.konekin.space/" class="footer-back">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Kembali ke MLUP Academy
+            </a>
+          </div>
         </div>
+        <p class="footer-note">
+          © {{ date('Y') }} · MLUP Academy · Bandung, Jawa Barat, Indonesia — Komunitas pendidikan muslim Indonesia.
+        </p>
+      </div>
     </footer>
+
+    <script>
+    // ── Scroll Progress ──
+    const progressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? window.scrollY / max : 0;
+      progressBar.style.transform = `scaleX(${pct})`;
+    }, { passive: true });
+
+    // ── Mobile Menu Toggle ──
+    const mobileBtn = document.querySelector('.navbar-mobile-btn');
+    const navLinks = document.querySelector('.navbar-links');
+    if (mobileBtn && navLinks) {
+      mobileBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+      });
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('open');
+        });
+      });
+    }
+    </script>
 </body>
 </html>
